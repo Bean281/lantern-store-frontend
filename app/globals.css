@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Lantern Store Color Palette */
+    --golden-moonlight: 51 100% 50%; /* #FFD700 */
+    --lotus-pink: 4 100% 81%; /* #FF9AA2 */
+    --lantern-red: 0 100% 64%; /* #FF4C4C */
+    --midnight-indigo: 240 37% 17%; /* #1C1C3A */
+    --cloud-white: 60 14% 97%; /* #FAF9F6 */
+    --jade-green: 130 35% 73%; /* #A2D5AB */
+
+    /* shadcn/ui variables mapped to our palette */
+    --background: 0 0% 100%; /* Updated */
+    --foreground: 240 10% 3.9%; /* Updated */
+    --card: 0 0% 100%; /* Updated */
+    --card-foreground: 240 10% 3.9%; /* Updated */
+    --popover: 0 0% 100%; /* Updated */
+    --popover-foreground: 240 10% 3.9%; /* Updated */
+    --primary: 240 5.9% 10%; /* Updated */
+    --primary-foreground: 0 0% 98%; /* Updated */
+    --secondary: 240 4.8% 95.9%; /* Updated */
+    --secondary-foreground: 240 5.9% 10%; /* Updated */
+    --muted: 240 4.8% 95.9%; /* Updated */
+    --muted-foreground: 240 3.8% 46.1%; /* Updated */
+    --accent: 240 4.8% 95.9%; /* Updated */
+    --accent-foreground: 240 5.9% 10%; /* Updated */
+    --destructive: 0 84.2% 60.2%; /* Updated */
+    --destructive-foreground: 0 0% 98%; /* Updated */
+    --border: 240 5.9% 90%; /* Updated */
+    --input: 240 5.9% 90%; /* Updated */
+    --ring: 240 5.9% 10%; /* Updated */
+    --radius: 0.5rem; /* Updated */
+  }
+
+  .dark {
+    /* Dark mode using Midnight Indigo as base */
+    --background: 240 10% 3.9%; /* Updated */
+    --foreground: 0 0% 98%; /* Updated */
+    --card: 240 10% 3.9%; /* Updated */
+    --card-foreground: 0 0% 98%; /* Updated */
+    --popover: 240 10% 3.9%; /* Updated */
+    --popover-foreground: 0 0% 98%; /* Updated */
+    --primary: 0 0% 98%; /* Updated */
+    --primary-foreground: 240 5.9% 10%; /* Updated */
+    --secondary: 240 3.7% 15.9%; /* Updated */
+    --secondary-foreground: 0 0% 98%; /* Updated */
+    --muted: 240 3.7% 15.9%; /* Updated */
+    --muted-foreground: 240 5% 64.9%; /* Updated */
+    --accent: 240 3.7% 15.9%; /* Updated */
+    --accent-foreground: 0 0% 98%; /* Updated */
+    --destructive: 0 62.8% 30.6%; /* Updated */
+    --destructive-foreground: 0 0% 98%; /* Updated */
+    --border: 240 3.7% 15.9%; /* Updated */
+    --input: 240 3.7% 15.9%; /* Updated */
+    --ring: 240 4.9% 83.9%; /* Updated */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom utility classes for the lantern theme */
+@layer utilities {
+  .text-golden-moonlight {
+    color: #ffd700;
+  }
+
+  .text-lotus-pink {
+    color: #ff9aa2;
+  }
+
+  .text-lantern-red {
+    color: #ff4c4c;
+  }
+
+  .text-midnight-indigo {
+    color: #1c1c3a;
+  }
+
+  .text-jade-green {
+    color: #a2d5ab;
+  }
+
+  .bg-golden-moonlight {
+    background-color: #ffd700;
+  }
+
+  .bg-lotus-pink {
+    background-color: #ff9aa2;
+  }
+
+  .bg-lantern-red {
+    background-color: #ff4c4c;
+  }
+
+  .bg-midnight-indigo {
+    background-color: #1c1c3a;
+  }
+
+  .bg-cloud-white {
+    background-color: #faf9f6;
+  }
+
+  .bg-jade-green {
+    background-color: #a2d5ab;
+  }
+
+  .border-golden-moonlight {
+    border-color: #ffd700;
+  }
+
+  .border-jade-green {
+    border-color: #a2d5ab;
+  }
+
+  .border-lantern-red {
+    border-color: #ff4c4c;
+  }
+
+  /* Special effects */
+  .lantern-glow {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+
+  .lantern-glow-hover:hover {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .celebration-gradient {
+    background: linear-gradient(135deg, #ff4c4c 0%, #ffd700 100%);
+  }
+
+  .moonlight-gradient {
+    background: linear-gradient(135deg, #ffd700 0%, #ff9aa2 100%);
+  }
+
+  .night-gradient {
+    background: linear-gradient(135deg, #1c1c3a 0%, #2a2a4a 100%);
+  }
+}
+
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
