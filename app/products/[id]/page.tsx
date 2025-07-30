@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { use } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, ShoppingCart, Plus, Minus, Heart, Star, ChevronLeft, ChevronRight, Share2 } from "lucide-react"
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,290 +22,24 @@ import { ProductCard } from "@/components/products/product-card"
 import { useCart } from "@/components/cart/cart-context"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
+import { useProductByIdQuery, useProducts } from "@/hooks/use-products-query"
 
-// Enhanced mock product data
-const mockProducts = {
-  "1": {
-    id: "1",
-    name: "Classic LED Lantern",
-    price: 29.99,
-    originalPrice: 39.99,
-    images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-    ],
-    category: "LED",
-    description:
-      "Bright and energy-efficient LED lantern perfect for camping and outdoor activities. Features multiple brightness settings, long battery life, and weather-resistant construction. This premium lantern combines modern LED technology with classic design elements.",
-    features: [
-      "Ultra-bright LED technology with 400 lumens output",
-      "3 brightness settings plus emergency red light mode",
-      "Up to 50 hours battery life on low setting",
-      "Weather-resistant IPX4 rating",
-      "Lightweight and portable design",
-      "Emergency red light mode for signaling",
-      "Comfortable rubber grip handle",
-      "Includes 4 AA batteries",
-    ],
-    specifications: {
-      Dimensions: "8.5 x 4.2 x 4.2 inches",
-      Weight: "1.2 lbs",
-      Battery: "4 AA batteries (included)",
-      "Light Output": "400 lumens max",
-      Material: "ABS plastic with rubber grip",
-      "Water Rating": "IPX4 splash resistant",
-      "Battery Life": "Up to 50 hours",
-      Warranty: "2 years manufacturer warranty",
-    },
-    inStock: true,
-    stockCount: 25,
-    rating: 4.5,
-    reviewCount: 128,
-    reviews: [
-      {
-        id: 1,
-        name: "John D.",
-        rating: 5,
-        date: "2024-01-10",
-        comment: "Excellent lantern! Very bright and the battery lasts forever. Perfect for camping trips.",
-      },
-      {
-        id: 2,
-        name: "Sarah M.",
-        rating: 4,
-        date: "2024-01-08",
-        comment: "Great quality and very reliable. The different brightness settings are really useful.",
-      },
-      {
-        id: 3,
-        name: "Mike R.",
-        rating: 5,
-        date: "2024-01-05",
-        comment: "Best lantern I've owned. Survived a week-long camping trip without any issues.",
-      },
-    ],
-  },
-  "2": {
-    id: "2",
-    name: "Vintage Oil Lantern",
-    price: 45.99,
-    images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-    ],
-    category: "Oil",
-    description:
-      "Traditional oil lantern with authentic vintage design and warm ambient lighting. Handcrafted with attention to detail.",
-    features: [
-      "Authentic vintage design",
-      "Warm ambient lighting",
-      "Adjustable wick",
-      "Durable metal construction",
-      "Glass chimney included",
-      "Easy to refill",
-    ],
-    specifications: {
-      Dimensions: "10 x 6 x 6 inches",
-      Weight: "2.1 lbs",
-      Fuel: "Kerosene or lamp oil",
-      Material: "Steel with brass accents",
-      "Burn Time": "8-12 hours per fill",
-      Capacity: "12 oz fuel tank",
-    },
-    inStock: true,
-    stockCount: 12,
-    rating: 4.3,
-    reviewCount: 89,
-    reviews: [
-      {
-        id: 1,
-        name: "Emma L.",
-        rating: 4,
-        date: "2024-01-12",
-        comment: "Beautiful vintage design. Creates a lovely atmosphere for outdoor dinners.",
-      },
-      {
-        id: 2,
-        name: "Robert K.",
-        rating: 5,
-        date: "2024-01-09",
-        comment: "Authentic feel and great build quality. Burns evenly and looks amazing.",
-      },
-    ],
-  },
-  "3": {
-    id: "3",
-    name: "Solar Garden Lantern",
-    price: 35.99,
-    images: ["/placeholder.svg?height=600&width=600", "/placeholder.svg?height=600&width=600"],
-    category: "Solar",
-    description: "Eco-friendly solar-powered lantern ideal for garden and pathway lighting.",
-    features: [
-      "Solar powered - no batteries needed",
-      "Automatic dusk-to-dawn operation",
-      "Weather-resistant construction",
-      "Warm white LED light",
-    ],
-    specifications: {
-      Dimensions: "7 x 7 x 9 inches",
-      Weight: "1.5 lbs",
-      SolarPanel: "2W monocrystalline",
-      BatteryCapacity: "1200mAh rechargeable",
-    },
-    inStock: false,
-    stockCount: 50,
-    rating: 4.0,
-    reviewCount: 56,
-    reviews: [],
-  },
-  "4": {
-    id: "4",
-    name: "Rechargeable Camping Lantern",
-    price: 52.99,
-    images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-    ],
-    category: "LED",
-    description: "High-capacity rechargeable lantern with multiple brightness settings.",
-    features: ["USB rechargeable battery", "5 brightness modes", "Power bank function", "Water-resistant IPX4"],
-    specifications: {
-      Dimensions: "4 x 4 x 7 inches",
-      Weight: "1.3 lbs",
-      BatteryCapacity: "4000mAh",
-      ChargingTime: "4-5 hours",
-    },
-    inStock: true,
-    stockCount: 18,
-    rating: 4.7,
-    reviewCount: 142,
-    reviews: [
-      {
-        id: 1,
-        name: "Alex T.",
-        rating: 5,
-        date: "2024-01-15",
-        comment: "Amazing battery life! Used it for 3 days straight on a camping trip.",
-      },
-    ],
-  },
-  "5": {
-    id: "5",
-    name: "Decorative Paper Lantern",
-    price: 18.99,
-    images: ["/placeholder.svg?height=600&width=600", "/placeholder.svg?height=600&width=600"],
-    category: "Decorative",
-    description: "Beautiful handcrafted paper lantern for indoor decoration and events.",
-    features: ["Handcrafted design", "Collapsible for easy storage", "LED compatible", "Available in multiple colors"],
-    specifications: {
-      Dimensions: "12 inch diameter",
-      Weight: "0.3 lbs",
-      Material: "Rice paper and bamboo",
-      LightSource: "Not included",
-    },
-    inStock: true,
-    stockCount: 50,
-    rating: 4.2,
-    reviewCount: 75,
-    reviews: [],
-  },
-  "6": {
-    id: "6",
-    name: "Emergency Hurricane Lantern",
-    price: 39.99,
-    originalPrice: 49.99,
-    images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-    ],
-    category: "Emergency",
-    description: "Reliable hurricane lantern designed for emergency situations and power outages.",
-    features: [
-      "Wind and storm resistant",
-      "Burns for up to 12 hours",
-      "Adjustable flame",
-      "Durable metal construction",
-    ],
-    specifications: {
-      Dimensions: "9 x 5 x 5 inches",
-      Weight: "1.8 lbs",
-      Fuel: "Kerosene or paraffin",
-      TankCapacity: "12 oz",
-    },
-    inStock: true,
-    stockCount: 35,
-    rating: 4.8,
-    reviewCount: 112,
-    reviews: [
-      {
-        id: 1,
-        name: "Maria S.",
-        rating: 5,
-        date: "2024-01-14",
-        comment: "Perfect for power outages. Very reliable and gives great light.",
-      },
-      {
-        id: 2,
-        name: "David P.",
-        rating: 4,
-        date: "2024-01-11",
-        comment: "Solid construction and works exactly as advertised. Great emergency backup.",
-      },
-    ],
-  },
+// Helper functions
+const renderStars = (rating: number) => {
+  return Array.from({ length: 5 }, (_, i) => (
+    <Star
+      key={i}
+      className={`h-4 w-4 ${i < Math.floor(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+    />
+  ))
 }
 
-// Related products
-const relatedProducts = [
-  {
-    id: "2",
-    name: "Vintage Oil Lantern",
-    price: 45.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Oil",
-    description: "Traditional oil lantern with authentic vintage design.",
-    inStock: true,
-  },
-  {
-    id: "4",
-    name: "Rechargeable Camping Lantern",
-    price: 52.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "LED",
-    description: "High-capacity rechargeable lantern with multiple brightness settings.",
-    inStock: true,
-  },
-  {
-    id: "5",
-    name: "Decorative Paper Lantern",
-    price: 18.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Decorative",
-    description: "Beautiful handcrafted paper lantern for indoor decoration.",
-    inStock: true,
-  },
-  {
-    id: "6",
-    name: "Emergency Hurricane Lantern",
-    price: 39.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Emergency",
-    description: "Reliable hurricane lantern for emergency situations.",
-    inStock: true,
-  },
-]
-
 interface ProductPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const { id } = params
+  const { id } = use(params)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isWishlisted, setIsWishlisted] = useState(false)
@@ -311,15 +47,69 @@ export default function ProductPage({ params }: ProductPageProps) {
   const { t } = useLanguage()
   const { toast } = useToast()
 
-  const product = mockProducts[id as keyof typeof mockProducts]
+  // Use React Query to fetch the product
+  const { data: product, isLoading, error } = useProductByIdQuery(id)
+  const { products } = useProducts() // For related products
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
+          <div className="container flex h-16 items-center px-4">
+            <Link href="/" className="flex items-center gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back</span>
+            </Link>
+          </div>
+        </header>
+        <div className="container px-4 py-6 lg:py-8">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
+            <div className="space-y-4">
+              <Skeleton className="aspect-square w-full" />
+              <div className="flex gap-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="w-16 h-16 sm:w-20 sm:h-20" />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-6">
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="container px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4 text-red-500">Error Loading Product</h1>
+          <p className="text-muted-foreground mb-4">{error.message}</p>
+          <Link href="/">
+            <Button>Back to Home</Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // Product not found
   if (!product) {
     return (
       <div className="container px-4 py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">{t("productNotFound")}</h1>
+          <p className="text-muted-foreground mb-4">The product you're looking for doesn't exist.</p>
           <Link href="/">
-            <Button>{t("home")}</Button>
+            <Button>Back to Home</Button>
           </Link>
         </div>
       </div>
@@ -331,12 +121,22 @@ export default function ProductPage({ params }: ProductPageProps) {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.images[0],
+      image: product.images?.[0] || "/placeholder.svg",
       quantity: quantity,
     })
     toast({
-      title: t("addedToCart"),
-      description: `${quantity}x ${product.name} ${t("addedToCart").toLowerCase()}`,
+      title: "Added to cart",
+      description: `${quantity} x ${product.name} added to your cart`,
+    })
+  }
+
+  const handleToggleWishlist = () => {
+    setIsWishlisted(!isWishlisted)
+    toast({
+      title: isWishlisted ? "Removed from wishlist" : "Added to wishlist",
+      description: isWishlisted 
+        ? `${product.name} removed from your wishlist`
+        : `${product.name} added to your wishlist`,
     })
   }
 
@@ -348,60 +148,36 @@ export default function ProductPage({ params }: ProductPageProps) {
     setSelectedImage((prev) => (prev === product.images.length - 1 ? 0 : prev + 1))
   }
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`h-4 w-4 ${i < Math.floor(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-      />
-    ))
-  }
-
-  // Get translated category
-  const getCategoryTranslation = (category: string) => {
-    const categoryMap: { [key: string]: keyof typeof import("@/lib/i18n").translations.en } = {
-      LED: "led",
-      Oil: "oil",
-      Solar: "solar",
-      Decorative: "decorative",
-      Emergency: "emergency",
-    }
-    return t(categoryMap[category] || "category")
-  }
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b sticky top-0 bg-background/95 backdrop-blur z-40">
-        <div className="container px-4 py-4">
+      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="font-medium">Back</span>
             </Link>
-            <Breadcrumb className="hidden sm:block">
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href="/">{t("home")}</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={`/?category=${product.category}`}>
-                    {getCategoryTranslation(product.category)}
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="line-clamp-1">{product.name}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-            <div className="ml-auto flex items-center gap-2">
-              <Button variant="ghost" size="icon">
-                <Share2 className="h-4 w-4" />
-              </Button>
-            </div>
+          </div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Products</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{product.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <div className="ml-auto flex items-center gap-2">
+            <Button variant="ghost" size="icon">
+              <Share2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </header>
@@ -413,13 +189,13 @@ export default function ProductPage({ params }: ProductPageProps) {
             {/* Main Image */}
             <div className="relative aspect-square overflow-hidden rounded-lg border bg-gray-50">
               <Image
-                src={product.images[selectedImage] || "/placeholder.svg"}
+                src={product.images?.[selectedImage] || "/placeholder.svg"}
                 alt={product.name}
                 fill
                 className="object-cover"
                 priority
               />
-              {product.images.length > 1 && (
+              {product.images && product.images.length > 1 && (
                 <>
                   <Button
                     variant="outline"
@@ -441,13 +217,13 @@ export default function ProductPage({ params }: ProductPageProps) {
               )}
               {product.originalPrice && (
                 <Badge className="absolute top-4 left-4 bg-red-500">
-                  {t("save")} ${(product.originalPrice - product.price).toFixed(2)}
+                  Save ${(product.originalPrice - product.price).toFixed(2)}
                 </Badge>
               )}
             </div>
 
             {/* Thumbnail Images */}
-            {product.images.length > 1 && (
+            {product.images && product.images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {product.images.map((image, index) => (
                   <button
@@ -456,12 +232,12 @@ export default function ProductPage({ params }: ProductPageProps) {
                     className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 overflow-hidden transition-all ${
                       selectedImage === index
                         ? "border-primary ring-2 ring-primary/20"
-                        : "border-border hover:border-primary/50"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Image
-                      src={image || "/placeholder.svg"}
-                      alt={`${product.name} ${index + 1}`}
+                      src={image}
+                      alt={`${product.name} view ${index + 1}`}
                       width={80}
                       height={80}
                       className="w-full h-full object-cover"
@@ -472,126 +248,134 @@ export default function ProductPage({ params }: ProductPageProps) {
             )}
           </div>
 
-          {/* Product Details */}
+          {/* Product Info */}
           <div className="space-y-6">
-            {/* Header Info */}
+            {/* Product Name & Price */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="secondary">{getCategoryTranslation(product.category)}</Badge>
-                {product.inStock && (
-                  <Badge variant="outline" className="text-green-600 border-green-200">
-                    {t("inStock")} ({product.stockCount} available)
-                  </Badge>
-                )}
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <span>{product.category}</span>
+                <Separator orientation="vertical" className="h-4" />
+                <Badge variant={product.inStock ? "default" : "secondary"}>
+                  {product.inStock ? "In Stock" : "Out of Stock"}
+                </Badge>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold mb-2">{product.name}</h1>
-
-              {/* Rating */}
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center">{renderStars(product.rating)}</div>
-                <span className="text-sm text-muted-foreground">
-                  {product.rating} ({product.reviewCount} {t("reviews")})
-                </span>
+              <h1 className="text-2xl lg:text-3xl font-bold mb-4">{product.name}</h1>
+              
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center">{renderStars(product.rating)}</div>
+                  <span className="text-sm text-muted-foreground">
+                    {product.rating} ({product.reviewCount} reviews)
+                  </span>
+                </div>
               </div>
 
-              {/* Price */}
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl sm:text-4xl font-bold text-primary">${product.price.toFixed(2)}</span>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-2xl lg:text-3xl font-bold">${product.price.toFixed(2)}</span>
                 {product.originalPrice && (
-                  <span className="text-xl text-muted-foreground line-through">
+                  <span className="text-lg text-muted-foreground line-through">
                     ${product.originalPrice.toFixed(2)}
                   </span>
                 )}
               </div>
+            </div>
 
+            {/* Description */}
+            <div>
               <p className="text-muted-foreground leading-relaxed">{product.description}</p>
             </div>
 
-            {/* Quantity and Actions */}
+            {/* Features */}
+            {product.features && product.features.length > 0 && (
+              <div>
+                <h3 className="font-semibold mb-3">Key Features</h3>
+                <ul className="space-y-2">
+                  {product.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm">
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Quantity & Actions */}
             <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <label className="font-medium">{t("quantity")}:</label>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+              <div className="flex items-center gap-3">
+                <span className="font-medium">Quantity:</span>
+                <div className="flex items-center border rounded-lg">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                  >
                     <Minus className="h-4 w-4" />
                   </Button>
-                  <span className="w-12 text-center font-medium text-lg">{quantity}</span>
-                  <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
+                  <span className="px-4 py-2 min-w-[3rem] text-center">{quantity}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10"
+                    onClick={() => setQuantity(quantity + 1)}
+                    disabled={quantity >= (product.stockCount || 99)}
+                  >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
-              <div className="flex gap-3">
-                <Button size="lg" className="flex-1" onClick={handleAddToCart} disabled={!product.inStock}>
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  {t("addToCart")} - ${(product.price * quantity).toFixed(2)}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={!product.inStock}
+                  className="flex-1"
+                  size="lg"
+                >
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  {product.inStock ? "Add to Cart" : "Out of Stock"}
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => setIsWishlisted(!isWishlisted)}
-                  className={isWishlisted ? "text-red-500 border-red-200" : ""}
+                  onClick={handleToggleWishlist}
+                  className={`${isWishlisted ? "text-red-500 border-red-500" : ""}`}
                 >
-                  <Heart className={`h-5 w-5 ${isWishlisted ? "fill-current" : ""}`} />
+                  <Heart className={`h-4 w-4 mr-2 ${isWishlisted ? "fill-red-500" : ""}`} />
+                  {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                 </Button>
               </div>
-
-              {!product.inStock && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-800 font-medium">{t("outOfStock")}</p>
-                  <p className="text-red-600 text-sm">This item is currently unavailable. Check back soon!</p>
-                </div>
-              )}
             </div>
+
+            {/* Specifications */}
+            {product.specifications && Object.keys(product.specifications).length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Specifications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-3">
+                    {Object.entries(product.specifications).map(([key, value]) => (
+                      <div key={key} className="flex justify-between py-2 border-b border-border/50 last:border-0">
+                        <span className="font-medium">{key}:</span>
+                        <span className="text-muted-foreground">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
 
-        {/* Product Information Sections */}
-        <div className="mt-12 lg:mt-16 space-y-8">
-          {/* Features Section */}
+        {/* Reviews Section */}
+        <div className="mt-12 lg:mt-16">
           <section>
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl">{t("features")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {product.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-sm leading-relaxed">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Specifications Section */}
-          <section>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">{t("specifications")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(product.specifications).map(([key, value]) => (
-                    <div key={key} className="flex justify-between py-3 border-b border-border/50 last:border-0">
-                      <span className="font-medium text-sm">{key}:</span>
-                      <span className="text-muted-foreground text-sm text-right">{value}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Reviews Section */}
-          <section>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">{t("reviews")}</CardTitle>
+                <CardTitle className="text-xl">Reviews</CardTitle>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center">{renderStars(product.rating)}</div>
@@ -599,41 +383,17 @@ export default function ProductPage({ params }: ProductPageProps) {
                   </div>
                   <Separator orientation="vertical" className="h-4" />
                   <span>
-                    {product.reviewCount} total {t("reviews")}
+                    {product.reviewCount} total reviews
                   </span>
                 </div>
               </CardHeader>
               <CardContent>
-                {product.reviews && product.reviews.length > 0 ? (
-                  <div className="space-y-6">
-                    {product.reviews.map((review) => (
-                      <div key={review.id} className="border-b border-border/50 pb-6 last:border-0">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <span className="font-medium">{review.name}</span>
-                            <div className="flex items-center">{renderStars(review.rating)}</div>
-                          </div>
-                          <span className="text-sm text-muted-foreground">{review.date}</span>
-                        </div>
-                        <p className="text-muted-foreground leading-relaxed">{review.comment}</p>
-                      </div>
-                    ))}
-
-                    {/* Add Review Button */}
-                    <div className="pt-4">
-                      <Button variant="outline" className="w-full sm:w-auto bg-transparent">
-                        Write a Review
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground mb-4">
-                      No {t("reviews")} yet. Be the first to review this product!
-                    </p>
-                    <Button variant="outline">Write the First Review</Button>
-                  </div>
-                )}
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">
+                    No reviews yet. Be the first to review this product!
+                  </p>
+                  <Button variant="outline">Write the First Review</Button>
+                </div>
               </CardContent>
             </Card>
           </section>
@@ -642,13 +402,13 @@ export default function ProductPage({ params }: ProductPageProps) {
         {/* Related Products */}
         <div className="mt-12 lg:mt-16">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">{t("relatedProducts")}</h2>
+            <h2 className="text-2xl font-bold">Related Products</h2>
             <Link href="/">
               <Button variant="outline">View All</Button>
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            {relatedProducts.map((relatedProduct) => (
+            {products.slice(0, 4).map((relatedProduct) => (
               <ProductCard key={relatedProduct.id} product={relatedProduct} />
             ))}
           </div>

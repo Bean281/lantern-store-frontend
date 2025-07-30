@@ -12,17 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useCart } from "@/components/cart/cart-context"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
-
-interface Product {
-  id: string
-  name: string
-  price: number
-  originalPrice?: number
-  image: string
-  category: string
-  description: string
-  inStock: boolean
-}
+import { Product } from "@/lib/api/products/type"
 
 interface ProductCardProps {
   product: Product
@@ -47,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: product.images?.[0] || "/placeholder.svg",
       quantity: quantity,
     })
     setShowQuantityModal(false)
@@ -64,7 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Link href={`/products/${product.id}`}>
           <div className="aspect-square overflow-hidden relative">
             <Image
-              src={product.image || "/placeholder.svg"}
+              src={product.images?.[0] || "/placeholder.svg"}
               alt={product.name}
               width={300}
               height={300}
@@ -131,7 +121,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <Image
-                src={product.image || "/placeholder.svg"}
+                src={product.images?.[0] || "/placeholder.svg"}
                 alt={product.name}
                 width={80}
                 height={80}

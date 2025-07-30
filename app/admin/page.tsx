@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/components/auth/auth-context"
+import { useAuth } from "@/hooks/use-auth"
 import { AdminDashboard } from "@/components/admin/admin-dashboard"
 
 export default function AdminPage() {

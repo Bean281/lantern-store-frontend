@@ -3,9 +3,10 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { CartProvider } from "@/components/cart/cart-context"
-import { AuthProvider } from "@/components/auth/auth-context"
+import { AuthProvider } from "@/hooks/use-auth"
 import { LanguageProvider } from "@/components/language/language-context"
 import { Toaster } from "@/components/ui/toaster"
+import { QueryProvider } from "@/lib/query-client"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,14 +24,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <LanguageProvider>
-          <AuthProvider>
-            <CartProvider>
-              {children}
-              <Toaster />
-            </CartProvider>
-          </AuthProvider>
-        </LanguageProvider>
+        <QueryProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <CartProvider>
+                {children}
+                <Toaster />
+              </CartProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </QueryProvider>
       </body>
     </html>
   )

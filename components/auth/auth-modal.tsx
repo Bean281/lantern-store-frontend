@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { useAuth } from "./auth-context"
+import { useAuth } from "@/hooks/use-auth"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
 
@@ -35,33 +35,29 @@ export function AuthModal({ open, onOpenChange, mode, onModeChange }: AuthModalP
     setIsLoading(true)
 
     try {
-      let success = false
       if (mode === "login") {
-        success = await login(email, password)
+        await login({ email, password })
+        toast({
+          title: "Welcome back!",
+          description: "You have been signed in.",
+        })
       } else {
-        success = await register(email, password, name)
+        await register({ email, password, name: name || undefined })
+        toast({
+          title: "Account created!",
+          description: "Your account has been created successfully.",
+        })
       }
 
-      if (success) {
-        toast({
-          title: mode === "login" ? "Welcome back!" : "Account created!",
-          description: mode === "login" ? "You have been signed in." : "Your account has been created successfully.",
-        })
-        onOpenChange(false)
-        setEmail("")
-        setPassword("")
-        setName("")
-      } else {
-        toast({
-          title: t("error"),
-          description: "Invalid credentials. Please try again.",
-          variant: "destructive",
-        })
-      }
+      onOpenChange(false)
+      setEmail("")
+      setPassword("")
+      setName("")
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong. Please try again."
       toast({
         title: t("error"),
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {
@@ -157,8 +153,8 @@ export function AuthModal({ open, onOpenChange, mode, onModeChange }: AuthModalP
         {mode === "login" && (
           <div className="text-xs text-muted-foreground text-center space-y-1">
             <p>Demo credentials:</p>
-            <p>Admin: admin@lanternstore.com / admin123</p>
-            <p>User: any email / any password</p>
+            <p>Email: user@example.com</p>
+            <p>Password: password123</p>
           </div>
         )}
       </DialogContent>

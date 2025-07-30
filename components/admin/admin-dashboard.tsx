@@ -7,7 +7,7 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { OrderManagement } from "./order-management"
 import { ProductManagement } from "./product-management"
 import { CategoryManagement } from "./category-management"
-import { useAuth } from "@/components/auth/auth-context"
+import { useAuth } from "@/hooks/use-auth"
 import { useLanguage } from "@/components/language/language-context"
 
 export function AdminDashboard() {

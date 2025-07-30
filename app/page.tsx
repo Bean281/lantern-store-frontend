@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { Search, Filter, ShoppingCart, User, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,75 +19,17 @@ import { CartDrawer } from "@/components/cart/cart-drawer"
 import { AuthModal } from "@/components/auth/auth-modal"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useCart } from "@/components/cart/cart-context"
-import { useAuth } from "@/components/auth/auth-context"
+import { useAuth } from "@/hooks/use-auth"
 import { useLanguage } from "@/components/language/language-context"
+import { useProducts } from "@/hooks/use-products-query"
+import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
-
-// Mock data - in a real app, this would come from an API
-const mockProducts = [
-  {
-    id: "1",
-    name: "Classic LED Lantern",
-    price: 29.99,
-    originalPrice: 39.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "LED",
-    description: "Bright and energy-efficient LED lantern perfect for camping and outdoor activities.",
-    inStock: true,
-  },
-  {
-    id: "2",
-    name: "Vintage Oil Lantern",
-    price: 45.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Oil",
-    description: "Traditional oil lantern with authentic vintage design and warm ambient lighting.",
-    inStock: true,
-  },
-  {
-    id: "3",
-    name: "Solar Garden Lantern",
-    price: 35.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Solar",
-    description: "Eco-friendly solar-powered lantern ideal for garden and pathway lighting.",
-    inStock: false,
-  },
-  {
-    id: "4",
-    name: "Rechargeable Camping Lantern",
-    price: 52.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "LED",
-    description: "High-capacity rechargeable lantern with multiple brightness settings.",
-    inStock: true,
-  },
-  {
-    id: "5",
-    name: "Decorative Paper Lantern",
-    price: 18.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Decorative",
-    description: "Beautiful handcrafted paper lantern for indoor decoration and events.",
-    inStock: true,
-  },
-  {
-    id: "6",
-    name: "Emergency Hurricane Lantern",
-    price: 39.99,
-    originalPrice: 49.99,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Emergency",
-    description: "Reliable hurricane lantern designed for emergency situations and power outages.",
-    inStock: true,
-  },
-]
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [priceRange, setPriceRange] = useState([0, 100])
-  const [sortBy, setSortBy] = useState("newest")
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000])
+  const [sortBy, setSortBy] = useState("createdAt")
   const [showFilters, setShowFilters] = useState(false)
   const [showCart, setShowCart] = useState(false)
   const [showAuth, setShowAuth] = useState(false)
@@ -97,58 +39,74 @@ export default function HomePage() {
   const { user, logout } = useAuth()
   const { language, setLanguage, t } = useLanguage()
 
-  // Category mapping for translation
-  const categoryMapping = {
-    All: "All",
-    LED: "LED",
-    Oil: "Oil",
-    Solar: "Solar",
-    Decorative: "Decorative",
-    Emergency: "Emergency",
-  }
+  // Use React Query hooks for products
+  const {
+    products,
+    categories: apiCategories,
+    isLoading,
+    error,
+    totalProducts,
+    currentPage,
+    totalPages,
+    searchProducts,
+    filterByCategory,
+    sortProducts,
+    setPriceRange: setApiPriceRange,
+    goToPage,
+  } = useProducts()
 
-  // Get translated categories for display
-  const categories = [
+  // Map API categories to display format
+  const displayCategories = [
     { key: "All", label: t("all") },
-    { key: "LED", label: t("led") },
-    { key: "Oil", label: t("oil") },
-    { key: "Solar", label: t("solar") },
-    { key: "Decorative", label: t("decorative") },
-    { key: "Emergency", label: t("emergency") },
+    ...apiCategories.map((cat) => ({ key: cat, label: cat }))
   ]
 
   const sortOptions = [
-    { value: "newest", label: t("newest") },
+    { value: "createdAt", label: t("newest") },
     { value: "price-low", label: t("priceLowToHigh") },
     { value: "price-high", label: t("priceHighToLow") },
     { value: "name", label: t("nameAZ") },
   ]
 
-  const filteredProducts = useMemo(() => {
-    const filtered = mockProducts.filter((product) => {
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase())
-      // Use the original English category key for comparison, not the translated label
-      const matchesCategory = selectedCategory === "All" || product.category === selectedCategory
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1]
-      return matchesSearch && matchesCategory && matchesPrice
-    })
-
-    // Sort products
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "price-low":
-          return a.price - b.price
-        case "price-high":
-          return b.price - a.price
-        case "name":
-          return a.name.localeCompare(b.name)
-        default:
-          return 0
+  // Update search when searchQuery changes
+  useEffect(() => {
+    const delayTimer = setTimeout(() => {
+      if (searchQuery.trim()) {
+        searchProducts(searchQuery)
+      } else {
+        searchProducts("")
       }
-    })
+    }, 500) // Debounce search
 
-    return filtered
-  }, [searchQuery, selectedCategory, priceRange, sortBy])
+    return () => clearTimeout(delayTimer)
+  }, [searchQuery, searchProducts])
+
+  // Update category filter when selectedCategory changes
+  useEffect(() => {
+    if (selectedCategory === "All") {
+      filterByCategory("")
+    } else {
+      filterByCategory(selectedCategory)
+    }
+  }, [selectedCategory, filterByCategory])
+
+  // Update price range when priceRange changes
+  useEffect(() => {
+    setApiPriceRange(priceRange[0], priceRange[1])
+  }, [priceRange, setApiPriceRange])
+
+  // Update sort when sortBy changes
+  useEffect(() => {
+    const sortMap: Record<string, { field: 'name' | 'price' | 'rating' | 'createdAt'; order: 'asc' | 'desc' }> = {
+      "createdAt": { field: "createdAt", order: "desc" },
+      "price-low": { field: "price", order: "asc" },
+      "price-high": { field: "price", order: "desc" },
+      "name": { field: "name", order: "asc" },
+    }
+    
+    const sort = sortMap[sortBy] || sortMap["createdAt"]
+    sortProducts(sort.field, sort.order)
+  }, [sortBy, sortProducts])
 
   const handleAuthClick = (mode: "login" | "register") => {
     setAuthMode(mode)
@@ -283,11 +241,11 @@ export default function HomePage() {
           {/* Filters Sidebar - Desktop */}
           <aside className="hidden lg:block w-64 shrink-0">
             <ProductFilters
-              categories={categories}
+              categories={displayCategories}
               selectedCategory={selectedCategory}
               onCategoryChange={handleCategoryChange}
               priceRange={priceRange}
-              onPriceRangeChange={setPriceRange}
+              onPriceRangeChange={(range) => setPriceRange([range[0], range[1]])}
             />
           </aside>
 
@@ -307,13 +265,13 @@ export default function HomePage() {
                     <SheetTitle>{t("filter")}</SheetTitle>
                   </SheetHeader>
                   <div className="mt-6">
-                    <ProductFilters
-                      categories={categories}
-                      selectedCategory={selectedCategory}
-                      onCategoryChange={handleCategoryChange}
-                      priceRange={priceRange}
-                      onPriceRangeChange={setPriceRange}
-                    />
+                                <ProductFilters
+              categories={displayCategories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={handleCategoryChange}
+              priceRange={priceRange}
+              onPriceRangeChange={(range) => setPriceRange([range[0], range[1]])}
+            />
                   </div>
                 </SheetContent>
               </Sheet>
@@ -338,7 +296,7 @@ export default function HomePage() {
 
             {/* Desktop Sort */}
             <div className="hidden lg:flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold">Premium Lanterns ({filteredProducts.length})</h1>
+              <h1 className="text-2xl font-bold">Premium Lanterns ({totalProducts})</h1>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
@@ -358,13 +316,32 @@ export default function HomePage() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-4">
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <p className="text-red-500">Error loading products: {error}</p>
+                <Button onClick={() => window.location.reload()} className="mt-4">
+                  Try Again
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
 
-            {filteredProducts.length === 0 && (
+            {!isLoading && !error && products.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">No products found matching your criteria.</p>
               </div>
