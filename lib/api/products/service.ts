@@ -17,18 +17,29 @@ const API_BASE_URL = 'https://lantern-store-backend.onrender.com/api/products';
 // Generic error handler for API responses
 async function handleApiResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
+    let errorMessage = `HTTP error! status: ${response.status}`;
+    let errorDetails = null;
+    
     try {
       const errorData: ProductErrorResponse = await response.json();
-      // Create an error with status code for better handling
-      const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      (error as any).status = response.status;
-      throw error;
+      console.error('🚨 Full API Error Response:', errorData);
+      errorMessage = errorData.message || errorMessage;
+      errorDetails = errorData;
     } catch (parseError) {
-      // If we can't parse the error response, throw a generic error
-      const error = new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-      (error as any).status = response.status;
-      throw error;
+      console.error('🚨 Could not parse error response as JSON');
+      try {
+        const responseText = await response.text();
+        console.error('🚨 Raw error response text:', responseText);
+        errorMessage = `${errorMessage} - ${responseText}`;
+      } catch {
+        console.error('🚨 Could not read error response text');
+      }
     }
+    
+    const error = new Error(errorMessage);
+    (error as any).status = response.status;
+    (error as any).details = errorDetails;
+    throw error;
   }
   return response.json();
 }
@@ -133,30 +144,57 @@ export async function getProductById(id: string): Promise<ProductResponseDto> {
 function createProductFormData(productData: CreateProductDto): FormData {
   const formData = new FormData();
   
+  console.log('🔧 FormData creation - Input data:', productData);
+  
   // Add required fields
   formData.append('name', productData.name);
   formData.append('price', productData.price.toString());
   formData.append('category', productData.category);
   formData.append('description', productData.description);
-  formData.append('features', productData.features);
-  formData.append('specifications', productData.specifications);
+  formData.append('features', String(productData.features));
+  formData.append('specifications', String(productData.specifications));
+  
+  console.log('📦 Required fields added to FormData:');
+  console.log('  name:', productData.name);
+  console.log('  price:', productData.price.toString());
+  console.log('  category:', productData.category);
+  console.log('  description:', productData.description);
+  console.log('  features:', String(productData.features), '(type:', typeof String(productData.features), ')');
+  console.log('  specifications:', String(productData.specifications), '(type:', typeof String(productData.specifications), ')');
   
   // Add optional fields
   if (productData.originalPrice !== undefined) {
     formData.append('originalPrice', productData.originalPrice.toString());
+    console.log('  originalPrice:', productData.originalPrice.toString());
   }
   if (productData.inStock !== undefined) {
     formData.append('inStock', productData.inStock);
+    console.log('  inStock:', productData.inStock);
   }
   if (productData.stockCount !== undefined) {
     formData.append('stockCount', productData.stockCount);
+    console.log('  stockCount:', productData.stockCount);
   }
   
   // Add image files
   if (productData.images && productData.images.length > 0) {
-    productData.images.forEach((image) => {
+    console.log('📷 Adding images to FormData:');
+    productData.images.forEach((image, index) => {
+      console.log(`  Image ${index}:`, image.name, `(${image.size} bytes, ${image.type})`);
       formData.append('images', image);
     });
+  } else {
+    console.log('📷 No images to add');
+  }
+  
+  // Log final FormData contents
+  console.log('📋 Final FormData entries:');
+  for (let [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      console.log(`  ${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+    } else {
+      console.log(`  ${key}: "${value}" (${typeof value})`);
+    }
   }
   
   return formData;

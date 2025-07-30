@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search, Eye, Edit, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,65 +13,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useLanguage } from "@/components/language/language-context"
-
-// Mock orders data
-const mockOrders = [
-  {
-    id: "LT001234",
-    customerName: "John Doe",
-    phone: "+1234567890",
-    address: "123 Main St, City, State 12345",
-    items: [
-      { name: "Classic LED Lantern", quantity: 2, price: 29.99 },
-      { name: "Solar Garden Lantern", quantity: 1, price: 35.99 },
-    ],
-    total: 95.97,
-    status: "new",
-    createdAt: "2024-01-15T10:30:00Z",
-    notes: "Please deliver in the evening",
-  },
-  {
-    id: "LT001235",
-    customerName: "Jane Smith",
-    phone: "+1234567891",
-    address: "456 Oak Ave, City, State 12345",
-    items: [{ name: "Vintage Oil Lantern", quantity: 1, price: 45.99 }],
-    total: 45.99,
-    status: "negotiating",
-    createdAt: "2024-01-14T14:20:00Z",
-    notes: "",
-  },
-  {
-    id: "LT001236",
-    customerName: "Bob Johnson",
-    phone: "+1234567892",
-    address: "789 Pine St, City, State 12345",
-    items: [{ name: "Rechargeable Camping Lantern", quantity: 3, price: 52.99 }],
-    total: 158.97,
-    status: "shipping",
-    createdAt: "2024-01-13T09:15:00Z",
-    notes: "Urgent delivery requested",
-  },
-  {
-    id: "LT001237",
-    customerName: "Alice Brown",
-    phone: "+1234567893",
-    address: "321 Elm St, City, State 12345",
-    items: [{ name: "Decorative Paper Lantern", quantity: 5, price: 18.99 }],
-    total: 94.95,
-    status: "completed",
-    createdAt: "2024-01-12T16:45:00Z",
-    notes: "",
-  },
-]
+import { useOrders } from "@/hooks/use-orders"
+import { useToast } from "@/hooks/use-toast"
+import type { Order } from "@/lib/api/orders/type"
 
 export function OrderManagement() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedOrder, setSelectedOrder] = useState<any>(null)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [showOrderDetails, setShowOrderDetails] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
-  const [editingOrder, setEditingOrder] = useState<any>(null)
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null)
   const [editForm, setEditForm] = useState({
     customerName: "",
     phone: "",
@@ -81,38 +34,66 @@ export function OrderManagement() {
   })
 
   const { t } = useLanguage()
+  const { toast } = useToast()
+  
+  // Use the real orders API
+  const {
+    allOrders,
+    isLoadingAllOrders,
+    allOrdersError,
+    updateOrderStatus,
+    updateOrderInfoAdmin,
+    isUpdatingStatus,
+    isUpdatingInfoAdmin,
+    refreshAllOrders,
+  } = useOrders()
 
   const statusConfig = {
-    new: { label: t("newOrders"), color: "bg-blue-500" },
-    negotiating: { label: t("negotiating"), color: "bg-yellow-500" },
-    shipping: { label: t("shipping"), color: "bg-purple-500" },
-    completed: { label: t("completed"), color: "bg-green-500" },
+    NEW: { label: t("newOrders"), color: "bg-blue-500" },
+    NEGOTIATING: { label: t("negotiating"), color: "bg-yellow-500" },
+    SHIPPING: { label: t("shipping"), color: "bg-purple-500" },
+    COMPLETED: { label: t("completed"), color: "bg-green-500" },
   }
 
-  const filteredOrders = mockOrders.filter(
-    (order) =>
+  const filteredOrders = allOrders.filter(
+    (order: Order) =>
       order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.id.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   const ordersByStatus = {
-    new: filteredOrders.filter((order) => order.status === "new"),
-    negotiating: filteredOrders.filter((order) => order.status === "negotiating"),
-    shipping: filteredOrders.filter((order) => order.status === "shipping"),
-    completed: filteredOrders.filter((order) => order.status === "completed"),
+    NEW: filteredOrders.filter((order: Order) => order.status === "NEW"),
+    NEGOTIATING: filteredOrders.filter((order: Order) => order.status === "NEGOTIATING"),
+    SHIPPING: filteredOrders.filter((order: Order) => order.status === "SHIPPING"),
+    COMPLETED: filteredOrders.filter((order: Order) => order.status === "COMPLETED"),
   }
 
-  const handleViewOrder = (order: any) => {
+  const handleViewOrder = (order: Order) => {
     setSelectedOrder(order)
     setShowOrderDetails(true)
   }
 
-  const handleStatusChange = (orderId: string, newStatus: string) => {
-    // In a real app, this would update the order status via API
-    console.log(`Updating order ${orderId} to status: ${newStatus}`)
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      await updateOrderStatus({ 
+        orderId, 
+        status: newStatus as 'NEW' | 'NEGOTIATING' | 'SHIPPING' | 'COMPLETED' 
+      })
+      toast({
+        title: "Order status updated",
+        description: `Order ${orderId} status changed to ${newStatus}`,
+      })
+      refreshAllOrders()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update order status",
+        variant: "destructive",
+      })
+    }
   }
 
-  const handleEditOrder = (order: any) => {
+  const handleEditOrder = (order: Order) => {
     setEditingOrder(order)
     setEditForm({
       customerName: order.customerName,
@@ -124,23 +105,52 @@ export function OrderManagement() {
     setShowEditModal(true)
   }
 
-  const handleSaveEdit = () => {
-    if (!editForm.customerName || !editForm.phone || !editForm.address) {
+  const handleSaveEdit = async () => {
+    if (!editForm.customerName || !editForm.phone || !editForm.address || !editingOrder) {
       return
     }
 
-    // In a real app, this would update the order via API
-    console.log(`Updating order ${editingOrder.id}:`, editForm)
+    try {
+      await updateOrderInfoAdmin({
+        orderId: editingOrder.id,
+        updateData: {
+          customerName: editForm.customerName,
+          phone: editForm.phone,
+          address: editForm.address,
+          notes: editForm.notes,
+        }
+      })
 
-    setShowEditModal(false)
-    setEditingOrder(null)
-    setEditForm({
-      customerName: "",
-      phone: "",
-      address: "",
-      notes: "",
-      status: "",
-    })
+      // Also update status if changed
+      if (editForm.status !== editingOrder.status) {
+        await updateOrderStatus({ 
+          orderId: editingOrder.id, 
+          status: editForm.status as 'NEW' | 'NEGOTIATING' | 'SHIPPING' | 'COMPLETED' 
+        })
+      }
+
+      toast({
+        title: "Order updated",
+        description: `Order ${editingOrder.id} has been updated successfully`,
+      })
+
+      setShowEditModal(false)
+      setEditingOrder(null)
+      setEditForm({
+        customerName: "",
+        phone: "",
+        address: "",
+        notes: "",
+        status: "",
+      })
+      refreshAllOrders()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update order",
+        variant: "destructive",
+      })
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -168,18 +178,39 @@ export function OrderManagement() {
         </div>
       </div>
 
+      {/* Loading state */}
+      {isLoadingAllOrders && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </div>
+          <Skeleton className="h-64 w-full" />
+        </div>
+      )}
+
+      {/* Error state */}
+      {allOrdersError && (
+        <div className="text-center py-8">
+          <p className="text-red-500 mb-4">Error loading orders: {allOrdersError}</p>
+          <Button onClick={refreshAllOrders}>Try Again</Button>
+        </div>
+      )}
+
       {/* Order Status Tabs */}
-      <Tabs defaultValue="new" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          {Object.entries(statusConfig).map(([status, config]) => (
-            <TabsTrigger key={status} value={status} className="relative">
-              {config.label}
-              <Badge className="ml-2" variant="secondary">
-                {ordersByStatus[status as keyof typeof ordersByStatus].length}
-              </Badge>
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      {!isLoadingAllOrders && !allOrdersError && (
+        <Tabs defaultValue="NEW" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            {Object.entries(statusConfig).map(([status, config]) => (
+              <TabsTrigger key={status} value={status} className="relative">
+                {config.label}
+                <Badge className="ml-2" variant="secondary">
+                  {ordersByStatus[status as keyof typeof ordersByStatus].length}
+                </Badge>
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
         {Object.entries(statusConfig).map(([status, config]) => (
           <TabsContent key={status} value={status}>
@@ -250,6 +281,7 @@ export function OrderManagement() {
           </TabsContent>
         ))}
       </Tabs>
+      )}
 
       {/* Order Details Modal */}
       <Dialog open={showOrderDetails} onOpenChange={setShowOrderDetails}>
@@ -284,12 +316,12 @@ export function OrderManagement() {
                     <p>
                       <strong>Date:</strong> {formatDate(selectedOrder.createdAt)}
                     </p>
-                    <p>
+                    <div>
                       <strong>Status:</strong>
                       <Badge className="ml-2" variant="secondary">
                         {statusConfig[selectedOrder.status as keyof typeof statusConfig].label}
                       </Badge>
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -343,10 +375,10 @@ export function OrderManagement() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new">{t("newOrders")}</SelectItem>
-                    <SelectItem value="negotiating">{t("negotiating")}</SelectItem>
-                    <SelectItem value="shipping">{t("shipping")}</SelectItem>
-                    <SelectItem value="completed">{t("completed")}</SelectItem>
+                    <SelectItem value="NEW">{t("newOrders")}</SelectItem>
+                    <SelectItem value="NEGOTIATING">{t("negotiating")}</SelectItem>
+                    <SelectItem value="SHIPPING">{t("shipping")}</SelectItem>
+                    <SelectItem value="COMPLETED">{t("completed")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -418,10 +450,10 @@ export function OrderManagement() {
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new">{t("newOrders")}</SelectItem>
-                    <SelectItem value="negotiating">{t("negotiating")}</SelectItem>
-                    <SelectItem value="shipping">{t("shipping")}</SelectItem>
-                    <SelectItem value="completed">{t("completed")}</SelectItem>
+                    <SelectItem value="NEW">{t("newOrders")}</SelectItem>
+                    <SelectItem value="NEGOTIATING">{t("negotiating")}</SelectItem>
+                    <SelectItem value="SHIPPING">{t("shipping")}</SelectItem>
+                    <SelectItem value="COMPLETED">{t("completed")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -433,9 +465,9 @@ export function OrderManagement() {
                 <Button
                   className="flex-1"
                   onClick={handleSaveEdit}
-                  disabled={!editForm.customerName || !editForm.phone || !editForm.address}
+                  disabled={!editForm.customerName || !editForm.phone || !editForm.address || isUpdatingInfoAdmin || isUpdatingStatus}
                 >
-                  {t("save")} Changes
+                  {(isUpdatingInfoAdmin || isUpdatingStatus) ? `${t("loading")}...` : `${t("save")} Changes`}
                 </Button>
               </div>
             </div>

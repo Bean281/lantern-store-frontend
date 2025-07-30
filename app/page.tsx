@@ -17,6 +17,7 @@ import { ProductCard } from "@/components/products/product-card"
 import { ProductFilters } from "@/components/products/product-filters"
 import { CartDrawer } from "@/components/cart/cart-drawer"
 import { AuthModal } from "@/components/auth/auth-modal"
+import { OrderSearch } from "@/components/orders/order-search"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useCart } from "@/components/cart/cart-context"
 import { useAuth } from "@/hooks/use-auth"
@@ -28,7 +29,7 @@ import Link from "next/link"
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000])
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000])
   const [sortBy, setSortBy] = useState("createdAt")
   const [showFilters, setShowFilters] = useState(false)
   const [showCart, setShowCart] = useState(false)
@@ -145,6 +146,9 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Order Search */}
+            <OrderSearch />
+            
             {/* Language Switcher */}
             <LanguageSwitcher currentLanguage={language} onLanguageChange={setLanguage} />
 
@@ -214,6 +218,9 @@ export default function HomePage() {
                       className="pl-10"
                     />
                   </div>
+
+                  {/* Order Search */}
+                  <OrderSearch />
 
                   {!user && (
                     <div className="space-y-2">

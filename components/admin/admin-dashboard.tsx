@@ -3,42 +3,53 @@ import { Package, ShoppingCart, Users, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Skeleton } from "@/components/ui/skeleton"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { OrderManagement } from "./order-management"
 import { ProductManagement } from "./product-management"
 import { CategoryManagement } from "./category-management"
 import { useAuth } from "@/hooks/use-auth"
 import { useLanguage } from "@/components/language/language-context"
+import { useOrders } from "@/hooks/use-orders"
+import { useProducts } from "@/hooks/use-products-query"
 
 export function AdminDashboard() {
   const { user, logout } = useAuth()
   const { language, setLanguage, t } = useLanguage()
+  
+  // Get real stats from APIs
+  const { orderStats, isLoadingStats } = useOrders()
+  const { stats: productStats, isLoadingStats: isLoadingProductStats } = useProducts()
 
-  // Mock stats data
+  // Prepare stats data with real values
   const stats = [
     {
       title: t("totalOrders"),
-      value: "156",
-      change: "+12%",
+      value: orderStats?.totalOrders?.toString() || "0",
+      change: "+12%", // This could be calculated from historical data
       icon: ShoppingCart,
+      loading: isLoadingStats,
     },
     {
       title: t("totalProducts"),
-      value: "24",
-      change: "+3",
+      value: productStats?.totalProducts?.toString() || "0",
+      change: "+3", // This could be calculated from historical data
       icon: Package,
+      loading: isLoadingProductStats,
     },
     {
       title: t("totalCustomers"),
-      value: "89",
+      value: "89", // This would come from a customer stats API if available
       change: "+8%",
       icon: Users,
+      loading: false,
     },
     {
       title: t("revenue"),
-      value: "$4,567",
-      change: "+15%",
+      value: orderStats?.totalRevenue ? `$${orderStats.totalRevenue.toFixed(2)}` : "$0.00",
+      change: "+15%", // This could be calculated from historical data
       icon: TrendingUp,
+      loading: isLoadingStats,
     },
   ]
 
@@ -75,11 +86,20 @@ export function AdminDashboard() {
                 <stat.icon className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-green-600">{stat.change}</span>{" "}
-                  {language === "en" ? "from last month" : "từ tháng trước"}
-                </p>
+                {stat.loading ? (
+                  <div className="space-y-2">
+                    <Skeleton className="h-8 w-16" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-2xl font-bold">{stat.value}</div>
+                    <p className="text-xs text-muted-foreground">
+                      <span className="text-green-600">{stat.change}</span>{" "}
+                      {language === "en" ? "from last month" : "từ tháng trước"}
+                    </p>
+                  </>
+                )}
               </CardContent>
             </Card>
           ))}

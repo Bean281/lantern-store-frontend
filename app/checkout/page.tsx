@@ -16,6 +16,8 @@ import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/components/cart/cart-context"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
+import { useOrders } from "@/hooks/use-orders"
+import type { CreateOrderDto } from "@/lib/api/orders/type"
 
 export default function CheckoutPage() {
   const [formData, setFormData] = useState({
@@ -32,6 +34,7 @@ export default function CheckoutPage() {
   const { t } = useLanguage()
   const { toast } = useToast()
   const router = useRouter()
+  const { createOrder, isCreatingOrder } = useOrders()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -42,19 +45,43 @@ export default function CheckoutPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      // Prepare order data for API
+      const orderData: CreateOrderDto = {
+        items: items.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        customerInfo: {
+          fullName: formData.fullName,
+          phone: formData.phone,
+          address: formData.address,
+          notes: formData.notes,
+        },
+        total: getTotalPrice(),
+      }
 
-    const newOrderId = `LT${Date.now().toString().slice(-6)}`
-    setOrderId(newOrderId)
-    setOrderSubmitted(true)
-    clearCart()
-    setIsSubmitting(false)
+      // Create order via API
+      const response = await createOrder(orderData)
+      
+      setOrderId(response.order.id)
+      setOrderSubmitted(true)
+      clearCart()
 
-    toast({
-      title: t("orderSubmitted"),
-      description: `${t("orderCreated")} #${newOrderId}. We'll contact you on Zalo soon.`,
-    })
+      toast({
+        title: t("orderSubmitted"),
+        description: `${t("orderCreated")} #${response.order.id}. We'll contact you on Zalo soon.`,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit order. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (items.length === 0 && !orderSubmitted) {
@@ -203,8 +230,8 @@ export default function CheckoutPage() {
                       />
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                      {isSubmitting ? `${t("loading")}...` : t("submitOrder")}
+                    <Button type="submit" className="w-full" size="lg" disabled={isSubmitting || isCreatingOrder}>
+                      {(isSubmitting || isCreatingOrder) ? `${t("loading")}...` : t("submitOrder")}
                     </Button>
                   </form>
                 </CardContent>
