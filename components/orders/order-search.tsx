@@ -95,12 +95,12 @@ export function OrderSearch() {
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
           <Search className="h-4 w-4" />
-          Track My Order
+          Theo Dõi Đơn Hàng Của Tôi
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Track Your Order</DialogTitle>
+          <DialogTitle>Theo Dõi Đơn Hàng Của Tôi</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">

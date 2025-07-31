@@ -126,9 +126,9 @@ export default function HomePage() {
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center space-x-2">
               <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">L</span>
+                <span className="text-primary-foreground font-bold text-sm">V</span>
               </div>
-              <span className="font-bold text-xl">Lantern Store</span>
+              <span className="font-bold text-xl hidden sm:inline">Lồng Đèn Ông Vương</span>
             </Link>
           </div>
 
@@ -303,7 +303,7 @@ export default function HomePage() {
 
             {/* Desktop Sort */}
             <div className="hidden lg:flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold">Premium Lanterns ({totalProducts})</h1>
+              <h1 className="text-2xl font-bold">Lồng Đèn Các Loại ({totalProducts})</h1>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">

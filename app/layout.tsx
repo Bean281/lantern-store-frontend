@@ -11,8 +11,8 @@ import { QueryProvider } from "@/lib/query-client"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Lantern Store - Premium Lanterns & Lighting",
-  description: "Discover our collection of premium lanterns and lighting solutions",
+  title: "Lồng Đèn Ông Vương",
+  description: "Xưởng Lồng Đèn gia truyền, lồng đèn các loại",
     generator: 'v0.dev'
 }
 
