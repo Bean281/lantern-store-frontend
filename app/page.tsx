@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Filter, ShoppingCart, User, Menu } from "lucide-react"
+import { Search, Filter, ShoppingCart, User, Menu, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -24,6 +24,15 @@ import { useAuth } from "@/hooks/use-auth"
 import { useLanguage } from "@/components/language/language-context"
 import { useProducts } from "@/hooks/use-products-query"
 import { Skeleton } from "@/components/ui/skeleton"
+import { 
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 import Link from "next/link"
 
 export default function HomePage() {
@@ -353,6 +362,149 @@ export default function HomePage() {
                 <p className="text-muted-foreground">No products found matching your criteria.</p>
               </div>
             )}
+
+            {/* Pagination */}
+            {!isLoading && !error && totalPages > 1 && (
+              <div className="flex justify-center mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    {/* Previous Button */}
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          if (currentPage > 1) {
+                            goToPage(currentPage - 1)
+                          }
+                        }}
+                        className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+
+                    {/* Page Numbers */}
+                    {(() => {
+                      const pages = []
+                      const maxVisiblePages = 5
+                      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
+                      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+                      
+                      // Adjust start page if we're near the end
+                      if (endPage - startPage + 1 < maxVisiblePages) {
+                        startPage = Math.max(1, endPage - maxVisiblePages + 1)
+                      }
+
+                      // First page + ellipsis if needed
+                      if (startPage > 1) {
+                        pages.push(
+                          <PaginationItem key="1">
+                            <PaginationLink 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                goToPage(1)
+                              }}
+                              isActive={currentPage === 1}
+                              className="cursor-pointer"
+                            >
+                              1
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                        if (startPage > 2) {
+                          pages.push(
+                            <PaginationItem key="ellipsis-start">
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          )
+                        }
+                      }
+
+                      // Visible page range
+                      for (let page = startPage; page <= endPage; page++) {
+                        if (page === 1 && startPage === 1) {
+                          // Skip if already added above
+                          pages.push(
+                            <PaginationItem key={page}>
+                              <PaginationLink 
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  goToPage(page)
+                                }}
+                                isActive={currentPage === page}
+                                className="cursor-pointer"
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          )
+                        } else if (page !== 1) {
+                          pages.push(
+                            <PaginationItem key={page}>
+                              <PaginationLink 
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  goToPage(page)
+                                }}
+                                isActive={currentPage === page}
+                                className="cursor-pointer"
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          )
+                        }
+                      }
+
+                      // Ellipsis + last page if needed
+                      if (endPage < totalPages) {
+                        if (endPage < totalPages - 1) {
+                          pages.push(
+                            <PaginationItem key="ellipsis-end">
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          )
+                        }
+                        pages.push(
+                          <PaginationItem key={totalPages}>
+                            <PaginationLink 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                goToPage(totalPages)
+                              }}
+                              isActive={currentPage === totalPages}
+                              className="cursor-pointer"
+                            >
+                              {totalPages}
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                      }
+
+                      return pages
+                    })()}
+
+                    {/* Next Button */}
+                    <PaginationItem>
+                      <PaginationNext 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          if (currentPage < totalPages) {
+                            goToPage(currentPage + 1)
+                          }
+                        }}
+                        className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+
           </main>
         </div>
       </div>

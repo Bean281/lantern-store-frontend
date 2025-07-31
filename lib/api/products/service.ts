@@ -12,7 +12,9 @@ import {
   ProductErrorResponse
 } from './type';
 
-const API_BASE_URL = 'https://lantern-store-backend.onrender.com/api/products';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL 
+  ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`
+  : 'https://lantern-store-backend.onrender.com/api/products';
 
 // Generic error handler for API responses
 async function handleApiResponse<T>(response: Response): Promise<T> {

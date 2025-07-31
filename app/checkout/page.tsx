@@ -119,23 +119,27 @@ export default function CheckoutPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold mb-2">{t("orderSubmitted")}</h1>
-              <p className="text-muted-foreground">Your order #{orderId} has been received successfully.</p>
+              <p className="text-muted-foreground">Đơn hàng #{orderId} đã được xác nhận.</p>
             </div>
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-semibold mb-2">What happens next?</h3>
+                    <h3 className="font-semibold mb-2">Các bước tiếp thep?</h3>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• We'll contact you on Zalo to confirm your order</li>
-                      <li>• Discuss payment and delivery options</li>
-                      <li>• Arrange delivery to your address</li>
+                      <li>• Chúng tôi sẽ liên hệ bạn qua zalo để xác nhận đơn hàng</li>
+                      <li>• Xác nhận chi phí và phương thức vận chuyển</li>
+                      <li>• Vận chuyển đơn hàng đến bạn</li>
                     </ul>
                   </div>
                   <div className="flex items-center justify-center gap-2 p-4 bg-blue-50 rounded-lg">
-                    <span className="text-sm font-medium">Contact us on Zalo:</span>
-                    <Button variant="outline" size="sm">
-                      Open Zalo Chat
+                    <span className="text-sm font-medium">Liên hệ với chúng tôi qua Zalo:</span>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.open('https://zalo.me/0933724208', '_blank')}
+                    >
+                      Mở Zalo Chat
                     </Button>
                   </div>
                 </div>
@@ -146,7 +150,7 @@ export default function CheckoutPage() {
                 <Button className="w-full">{t("continueShopping")}</Button>
               </Link>
               <Button variant="outline" className="w-full bg-transparent" onClick={() => window.print()}>
-                Print Order Details
+                In đơn hàng
               </Button>
             </div>
           </div>
