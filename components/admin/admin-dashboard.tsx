@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useLanguage } from "@/components/language/language-context"
 import { useOrders } from "@/hooks/use-orders"
 import { useProducts } from "@/hooks/use-products-query"
+import { formatVND } from "@/lib/utils"
 
 export function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -46,7 +47,7 @@ export function AdminDashboard() {
     },
     {
       title: t("revenue"),
-      value: orderStats?.totalRevenue ? `$${orderStats.totalRevenue.toFixed(2)}` : "$0.00",
+      value: orderStats?.totalRevenue ? formatVND(orderStats.totalRevenue) : formatVND(0),
       change: "+15%", // This could be calculated from historical data
       icon: TrendingUp,
       loading: isLoadingStats,

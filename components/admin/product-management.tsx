@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
+import { formatVND } from "@/lib/utils"
 
 // Mock products data
 const mockProducts = [
@@ -269,7 +270,7 @@ export function ProductManagement() {
                   <TableCell>
                     <Badge variant="secondary">{getCategoryTranslation(product.category)}</Badge>
                   </TableCell>
-                  <TableCell className="font-medium">${product.price.toFixed(2)}</TableCell>
+                  <TableCell className="font-medium">{formatVND(product.price)}</TableCell>
                   <TableCell>
                     <span className={product.stock > 0 ? "text-green-600" : "text-red-600"}>{product.stock} units</span>
                   </TableCell>

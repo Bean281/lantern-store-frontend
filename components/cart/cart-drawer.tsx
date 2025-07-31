@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { useCart } from "./cart-context"
 import { useLanguage } from "@/components/language/language-context"
+import { formatVND } from "@/lib/utils"
 import Link from "next/link"
 
 interface CartDrawerProps {
@@ -50,7 +51,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                       />
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium truncate">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
+                        <p className="text-sm text-muted-foreground">{formatVND(item.price)} each</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
@@ -87,7 +88,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="border-t pt-4 space-y-4">
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>{t("total")}:</span>
-                  <span>${getTotalPrice().toFixed(2)}</span>
+                  <span>{formatVND(getTotalPrice())}</span>
                 </div>
                 <Link href="/checkout" onClick={() => onOpenChange(false)}>
                   <Button className="w-full" size="lg">

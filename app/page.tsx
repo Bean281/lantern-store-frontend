@@ -29,7 +29,7 @@ import Link from "next/link"
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000])
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000000])
   const [sortBy, setSortBy] = useState("createdAt")
   const [showFilters, setShowFilters] = useState(false)
   const [showCart, setShowCart] = useState(false)

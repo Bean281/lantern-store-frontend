@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useLanguage } from "@/components/language/language-context"
 import { useOrders } from "@/hooks/use-orders"
 import { useToast } from "@/hooks/use-toast"
+import { formatVND } from "@/lib/utils"
 import type { Order } from "@/lib/api/orders/type"
 
 export function OrderSearch() {
@@ -165,7 +166,7 @@ export function OrderSearch() {
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Total:</span>
-                            <span className="font-medium">${order.total.toFixed(2)}</span>
+                            <span className="font-medium">{formatVND(order.total)}</span>
                           </div>
                           {order.notes && (
                             <div className="text-sm">
@@ -180,7 +181,7 @@ export function OrderSearch() {
                             {order.items.map((item, index) => (
                               <div key={index} className="flex justify-between text-sm">
                                 <span>{item.name} x{item.quantity}</span>
-                                <span>${(item.price * item.quantity).toFixed(2)}</span>
+                                <span>{formatVND(item.price * item.quantity)}</span>
                               </div>
                             ))}
                           </div>

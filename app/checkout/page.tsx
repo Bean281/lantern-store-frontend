@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/components/cart/cart-context"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
+import { formatVND } from "@/lib/utils"
 import { useOrders } from "@/hooks/use-orders"
 import type { CreateOrderDto } from "@/lib/api/orders/type"
 
@@ -265,10 +266,10 @@ export default function CheckoutPage() {
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium truncate">{item.name}</h4>
                         <p className="text-sm text-muted-foreground">
-                          ${item.price.toFixed(2)} × {item.quantity}
+                          {formatVND(item.price)} × {item.quantity}
                         </p>
                       </div>
-                      <div className="font-medium">${(item.price * item.quantity).toFixed(2)}</div>
+                      <div className="font-medium">{formatVND(item.price * item.quantity)}</div>
                     </div>
                   ))}
 
@@ -277,7 +278,7 @@ export default function CheckoutPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>{t("subtotal")}:</span>
-                      <span>${getTotalPrice().toFixed(2)}</span>
+                      <span>{formatVND(getTotalPrice())}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Delivery:</span>
@@ -286,7 +287,7 @@ export default function CheckoutPage() {
                     <Separator />
                     <div className="flex justify-between text-lg font-semibold">
                       <span>{t("total")}:</span>
-                      <span>${getTotalPrice().toFixed(2)}</span>
+                      <span>{formatVND(getTotalPrice())}</span>
                     </div>
                   </div>
                 </CardContent>

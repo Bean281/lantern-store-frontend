@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useCart } from "@/components/cart/cart-context"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
+import { formatVND } from "@/lib/utils"
 import { Product } from "@/lib/api/products/type"
 
 interface ProductCardProps {
@@ -62,7 +63,7 @@ export function ProductCard({ product }: ProductCardProps) {
             />
             {product.originalPrice && (
               <Badge className="absolute top-2 left-2 bg-red-500">
-                Save ${(product.originalPrice - product.price).toFixed(2)}
+                                    Save {formatVND(product.originalPrice - product.price)}
               </Badge>
             )}
           </div>
@@ -86,10 +87,10 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-lg sm:text-2xl font-bold text-primary">${product.price.toFixed(2)}</span>
-              {product.originalPrice && (
-                <span className="text-sm text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
-              )}
+                              <span className="text-lg sm:text-2xl font-bold text-primary">{formatVND(product.price)}</span>
+                {product.originalPrice && (
+                  <span className="text-sm text-muted-foreground line-through">{formatVND(product.originalPrice)}</span>
+                )}
             </div>
 
             <Button
@@ -129,7 +130,7 @@ export function ProductCard({ product }: ProductCardProps) {
               />
               <div>
                 <h4 className="font-semibold">{product.name}</h4>
-                <p className="text-muted-foreground">${product.price.toFixed(2)}</p>
+                <p className="text-muted-foreground">{formatVND(product.price)}</p>
               </div>
             </div>
 
@@ -145,7 +146,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
             <div className="flex items-center justify-between text-lg font-semibold">
               <span>{t("total")}:</span>
-              <span>${(product.price * quantity).toFixed(2)}</span>
+                              <span>{formatVND(product.price * quantity)}</span>
             </div>
 
             <div className="flex gap-2">

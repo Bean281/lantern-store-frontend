@@ -5,6 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguage } from "@/components/language/language-context"
+import { formatVND } from "@/lib/utils"
 
 interface Category {
   key: string
@@ -53,10 +54,10 @@ export function ProductFilters({
           <CardTitle className="text-lg">{t("price")} Range</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Slider value={priceRange} onValueChange={onPriceRangeChange} max={100} min={0} step={5} className="w-full" />
+          <Slider value={priceRange} onValueChange={onPriceRangeChange} max={10000000} min={0} step={100000} className="w-full" />
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
+            <span>{formatVND(priceRange[0])}</span>
+            <span>{formatVND(priceRange[1])}</span>
           </div>
         </CardContent>
       </Card>

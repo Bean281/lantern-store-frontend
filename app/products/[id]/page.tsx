@@ -22,6 +22,7 @@ import { ProductCard } from "@/components/products/product-card"
 import { useCart } from "@/components/cart/cart-context"
 import { useLanguage } from "@/components/language/language-context"
 import { useToast } from "@/hooks/use-toast"
+import { formatVND } from "@/lib/utils"
 import { useProductByIdQuery, useProducts } from "@/hooks/use-products-query"
 
 // Helper functions
@@ -217,7 +218,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               )}
               {product.originalPrice && (
                 <Badge className="absolute top-4 left-4 bg-red-500">
-                  Save ${(product.originalPrice - product.price).toFixed(2)}
+                                      Save {formatVND(product.originalPrice - product.price)}
                 </Badge>
               )}
             </div>
@@ -271,10 +272,10 @@ export default function ProductPage({ params }: ProductPageProps) {
               </div>
 
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-2xl lg:text-3xl font-bold">${product.price.toFixed(2)}</span>
+                <span className="text-2xl lg:text-3xl font-bold">{formatVND(product.price)}</span>
                 {product.originalPrice && (
                   <span className="text-lg text-muted-foreground line-through">
-                    ${product.originalPrice.toFixed(2)}
+                    {formatVND(product.originalPrice)}
                   </span>
                 )}
               </div>

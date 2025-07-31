@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useLanguage } from "@/components/language/language-context"
 import { useOrders } from "@/hooks/use-orders"
 import { useToast } from "@/hooks/use-toast"
+import { formatVND } from "@/lib/utils"
 import type { Order } from "@/lib/api/orders/type"
 
 export function OrderManagement() {
@@ -248,7 +249,7 @@ export function OrderManagement() {
                             {order.items.length} item{order.items.length > 1 ? "s" : ""}
                           </div>
                         </TableCell>
-                        <TableCell className="font-medium">${order.total.toFixed(2)}</TableCell>
+                        <TableCell className="font-medium">{formatVND(order.total)}</TableCell>
                         <TableCell className="text-sm">{formatDate(order.createdAt)}</TableCell>
                         <TableCell>
                           <DropdownMenu>
@@ -343,15 +344,15 @@ export function OrderManagement() {
                       <TableRow key={index}>
                         <TableCell>{item.name}</TableCell>
                         <TableCell>{item.quantity}</TableCell>
-                        <TableCell>${item.price.toFixed(2)}</TableCell>
-                        <TableCell>${(item.price * item.quantity).toFixed(2)}</TableCell>
+                        <TableCell>{formatVND(item.price)}</TableCell>
+                        <TableCell>{formatVND(item.price * item.quantity)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
                 <div className="flex justify-end mt-4">
                   <div className="text-lg font-semibold">
-                    {t("total")}: ${selectedOrder.total.toFixed(2)}
+                    {t("total")}: {formatVND(selectedOrder.total)}
                   </div>
                 </div>
               </div>
