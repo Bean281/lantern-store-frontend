@@ -69,13 +69,13 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
 
         <div className="p-3 sm:p-4">
-          <div className="flex items-start justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2 gap-2">
             <Link href={`/products/${product.id}`}>
               <h3 className="font-semibold text-sm sm:text-lg leading-tight hover:text-primary transition-colors line-clamp-2">
                 {product.name}
               </h3>
             </Link>
-            <Badge variant="secondary" className="text-xs ml-2 flex-shrink-0">
+            <Badge variant="secondary" className="text-xs sm:ml-2 flex-shrink-0 self-start">
               {product.category}
             </Badge>
           </div>
