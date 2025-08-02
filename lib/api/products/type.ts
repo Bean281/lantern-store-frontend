@@ -57,8 +57,8 @@ export interface CreateProductDto {
   price: number;
   category: string;
   description: string;
-  features: string; // JSON string of features array
-  specifications: string; // JSON string of specifications object
+  features: string; 
+  specifications: string; 
   originalPrice?: number;
   inStock?: string; // "true" or "false"
   stockCount?: string; // Stock count as string

@@ -206,13 +206,19 @@ function createProductFormData(productData: CreateProductDto): FormData {
 function updateProductFormData(productData: UpdateProductDto): FormData {
   const formData = new FormData();
   
+  console.log('🔧 Creating FormData from productData:', productData);
+  
   // Add all provided fields
   Object.entries(productData).forEach(([key, value]) => {
     if (value !== undefined && key !== 'images') {
       if (key === 'price' || key === 'originalPrice') {
         formData.append(key, value.toString());
+        console.log(`📦 Added ${key}:`, value.toString(), '(converted to string)');
       } else {
-        formData.append(key, value as string);
+        // Ensure existingImages is always a string
+        const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+        formData.append(key, stringValue);
+        console.log(`📦 Added ${key}:`, stringValue, `(type: ${typeof stringValue})`);
       }
     }
   });
@@ -221,7 +227,18 @@ function updateProductFormData(productData: UpdateProductDto): FormData {
   if (productData.images && productData.images.length > 0) {
     productData.images.forEach((image) => {
       formData.append('images', image);
+      console.log('📦 Added image file:', image.name);
     });
+  }
+  
+  // Debug: Log final FormData contents
+  console.log('📋 Final FormData entries:');
+  for (let [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      console.log(`  ${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+    } else {
+      console.log(`  ${key}: "${value}" (${typeof value})`);
+    }
   }
   
   return formData;
