@@ -165,9 +165,9 @@ export function OrderManagement() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-background/50 rounded-lg p-6 border border-border/50">
       {/* Search and Filters */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-md border">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
@@ -181,8 +181,8 @@ export function OrderManagement() {
 
       {/* Loading state */}
       {isLoadingAllOrders && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-4 gap-4">
+        <div className="space-y-6 p-6 bg-muted/20 rounded-lg border">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-10 w-full" />
             ))}
@@ -193,7 +193,7 @@ export function OrderManagement() {
 
       {/* Error state */}
       {allOrdersError && (
-        <div className="text-center py-8">
+        <div className="text-center py-8 p-6 bg-destructive/10 border border-destructive/20 rounded-lg">
           <p className="text-red-500 mb-4">Error loading orders: {allOrdersError}</p>
           <Button onClick={refreshAllOrders}>Try Again</Button>
         </div>
@@ -202,9 +202,13 @@ export function OrderManagement() {
       {/* Order Status Tabs */}
       {!isLoadingAllOrders && !allOrdersError && (
         <Tabs defaultValue="NEW" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-muted/50 p-1 rounded-lg mb-16 lg:mb-0">
             {Object.entries(statusConfig).map(([status, config]) => (
-              <TabsTrigger key={status} value={status} className="relative">
+              <TabsTrigger 
+                key={status} 
+                value={status} 
+                className="relative bg-background/50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm border-0 rounded-md"
+              >
                 {config.label}
                 <Badge className="ml-2" variant="secondary">
                   {ordersByStatus[status as keyof typeof ordersByStatus].length}
@@ -286,15 +290,15 @@ export function OrderManagement() {
 
       {/* Order Details Modal */}
       <Dialog open={showOrderDetails} onOpenChange={setShowOrderDetails}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Order Details - {selectedOrder?.id}</DialogTitle>
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl bg-background border-border">
+          <DialogHeader className="pb-4 border-b border-border/50">
+            <DialogTitle className="text-foreground">Order Details - {selectedOrder?.id}</DialogTitle>
           </DialogHeader>
           {selectedOrder && (
-            <div className="space-y-6">
+            <div className="space-y-6 pt-4">
               {/* Customer Information */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
                   <h4 className="font-semibold mb-2">Customer Information</h4>
                   <div className="space-y-1 text-sm">
                     <p>
@@ -308,7 +312,7 @@ export function OrderManagement() {
                     </p>
                   </div>
                 </div>
-                <div>
+                <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
                   <h4 className="font-semibold mb-2">Order Information</h4>
                   <div className="space-y-1 text-sm">
                     <p>
@@ -328,8 +332,8 @@ export function OrderManagement() {
               </div>
 
               {/* Order Items */}
-              <div>
-                <h4 className="font-semibold mb-2">Order Items</h4>
+              <div className="p-4 bg-card/50 rounded-lg border border-border/50">
+                <h4 className="font-semibold mb-4">Order Items</h4>
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -359,20 +363,20 @@ export function OrderManagement() {
 
               {/* Notes */}
               {selectedOrder.notes && (
-                <div>
+                <div className="p-4 bg-muted/20 rounded-lg border border-border/50">
                   <h4 className="font-semibold mb-2">Notes</h4>
                   <p className="text-sm text-muted-foreground">{selectedOrder.notes}</p>
                 </div>
               )}
 
               {/* Status Update */}
-              <div>
-                <h4 className="font-semibold mb-2">Update Status</h4>
+              <div className="p-4 bg-accent/20 rounded-lg border border-border/50">
+                <h4 className="font-semibold mb-3">Update Status</h4>
                 <Select
                   defaultValue={selectedOrder.status}
                   onValueChange={(value) => handleStatusChange(selectedOrder.id, value)}
                 >
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-full sm:w-48">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -390,14 +394,14 @@ export function OrderManagement() {
 
       {/* Edit Order Modal */}
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl bg-background border-border">
+          <DialogHeader className="pb-4 border-b border-border/50">
+            <DialogTitle className="text-foreground">
               {t("edit")} Order - {editingOrder?.id}
             </DialogTitle>
           </DialogHeader>
           {editingOrder && (
-            <div className="space-y-6">
+            <div className="space-y-6 pt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-customerName">Customer Name *</Label>
