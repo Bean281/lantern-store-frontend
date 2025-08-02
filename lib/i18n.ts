@@ -1,4 +1,4 @@
-export type Language = "en" | "vi"
+export type Language = "en"
 
 export interface Translations {
   // Navigation
@@ -36,6 +36,7 @@ export interface Translations {
   reviews: string
   relatedProducts: string
   quantity: string
+  priceRange: string
 
   // Cart
   shoppingCart: string
@@ -119,7 +120,6 @@ export interface Translations {
   confirmYourOrder: string
   arrangeDelivery: string
   toYourAddress: string
-  save: string
 
   // Admin specific translations
   welcomeBack: string
@@ -182,188 +182,188 @@ export interface Translations {
 }
 
 export const translations: Record<Language, Translations> = {
+  // en: {
+  //   // Navigation
+  //   home: "Home",
+  //   products: "Products",
+  //   cart: "Cart",
+  //   checkout: "Checkout",
+  //   admin: "Admin",
+  //   signIn: "Sign In",
+  //   signUp: "Sign Up",
+  //   signOut: "Sign Out",
+
+  //   // Common
+  //   search: "Search",
+  //   filter: "Filter",
+  //   sort: "Sort",
+  //   add: "Add",
+  //   edit: "Edit",
+  //   delete: "Delete",
+  //   save: "Save",
+  //   cancel: "Cancel",
+  //   loading: "Loading",
+  //   error: "Error",
+  //   success: "Success",
+
+  //   // Product
+  //   addToCart: "Add to Cart",
+  //   outOfStock: "Out of Stock",
+  //   inStock: "In Stock",
+  //   price: "Price",
+  //   category: "Category",
+  //   description: "Description",
+  //   features: "Features",
+  //   specifications: "Specifications",
+  //   reviews: "Reviews",
+  //   relatedProducts: "Related Products",
+  //   quantity: "Quantity",
+
+  //   // Cart
+  //   shoppingCart: "Shopping Cart",
+  //   cartEmpty: "Your cart is empty",
+  //   proceedToCheckout: "Proceed to Checkout",
+  //   continueShopping: "Continue Shopping",
+  //   total: "Total",
+  //   subtotal: "Subtotal",
+
+  //   // Checkout
+  //   deliveryInformation: "Delivery Information",
+  //   fullName: "Full Name",
+  //   phoneNumber: "Phone Number",
+  //   deliveryAddress: "Delivery Address",
+  //   orderNotes: "Order Notes",
+  //   submitOrder: "Submit Order",
+  //   orderSubmitted: "Order Submitted!",
+  //   paymentInformation: "Payment Information",
+
+  //   // Admin
+  //   adminDashboard: "Admin Dashboard",
+  //   orderManagement: "Order Management",
+  //   productManagement: "Product Management",
+  //   totalOrders: "Tổng Đơn Hàng",
+  //   totalProducts: "Total Products",
+  //   totalCustomers: "Total Customers",
+  //   revenue: "Revenue",
+
+  //   // Order Status
+  //   newOrders: "New Orders",
+  //   negotiating: "Negotiating",
+  //   shipping: "Shipping",
+  //   completed: "Completed",
+
+  //   // Categories
+  //   all: "All",
+  //   led: "LED",
+  //   oil: "Oil",
+  //   solar: "Solar",
+  //   decorative: "Decorative",
+  //   emergency: "Emergency",
+
+  //   // Sort Options
+  //   newest: "Newest",
+  //   priceLowToHigh: "Price: Low to High",
+  //   priceHighToLow: "Price: High to Low",
+  //   nameAZ: "Name A-Z",
+
+  //   // Messages
+  //   addedToCart: "Added to cart",
+  //   orderCreated: "Order created successfully",
+  //   productNotFound: "Product not found",
+  //   cartIsEmpty: "Your cart is empty",
+
+  //   // Additional translations
+  //   viewAll: "View All",
+  //   writeReview: "Write a Review",
+  //   writeFirstReview: "Write the First Review",
+  //   noReviewsYet: "No reviews yet. Be the first to review this product!",
+  //   available: "available",
+  //   unavailable: "unavailable",
+  //   checkBackSoon: "This item is currently unavailable. Check back soon!",
+  //   whatHappensNext: "What happens next?",
+  //   contactUsOnZalo: "Contact us on Zalo:",
+  //   openZaloChat: "Open Zalo Chat",
+  //   printOrderDetails: "Print Order Details",
+  //   backToCart: "Back to Cart",
+  //   orderSummary: "Order Summary",
+  //   delivery: "Delivery",
+  //   free: "Free",
+  //   noPaymentRequired:
+  //     "No payment is required now. We'll contact you on Zalo to discuss payment options and confirm your order details.",
+  //   discussPaymentOptions: "discuss payment and delivery options",
+  //   specialInstructions: "Any special instructions or notes",
+  //   enterYour: "Enter your",
+  //   enterComplete: "Enter your complete",
+  //   anySpecialInstructions: "Any special instructions or notes",
+  //   submittingOrder: "Submitting Order",
+  //   addSomeProducts: "Add some products to your cart before checking out.",
+  //   beforeCheckingOut: "before checking out",
+  //   receivedSuccessfully: "has been received successfully",
+  //   confirmYourOrder: "We'll contact you on Zalo to confirm your order",
+  //   arrangeDelivery: "Arrange delivery",
+  //   toYourAddress: "to your address",
+  //   save: "Save",
+
+  //   // Admin specific translations
+  //   welcomeBack: "Welcome back",
+  //   fromLastMonth: "from last month",
+  //   customerInformation: "Customer Information",
+  //   orderInformation: "Order Information",
+  //   orderItems: "Order Items",
+  //   updateStatus: "Update Status",
+  //   viewDetails: "View Details",
+  //   editOrder: "Edit Order",
+  //   noOrdersInStatus: "No orders in this status",
+  //   selectStatus: "Select status",
+  //   saveChanges: "Save Changes",
+  //   productUpdated: "Product updated successfully",
+  //   productAdded: "Product added successfully",
+  //   productDeleted: "Product deleted successfully",
+  //   fillRequiredFields: "Please fill in all required fields",
+  //   addAtLeastOneImage: "Please add at least one product image",
+  //   noProductsFound: "No products found",
+  //   productImages: "Product Images",
+  //   uploadImages: "Upload Images",
+  //   noImagesUploaded: "No images uploaded",
+  //   uploadImagesToPreview: "Upload images to see preview",
+  //   setMain: "Set Main",
+  //   firstImageMain: "The first image will be used as the main product image",
+  //   dragDropReorder: "Drag and drop to reorder images",
+  //   clickSetMain: 'Click "Set Main" to make an image the primary one',
+  //   totalImages: "Total images",
+  //   selectCategory: "Select category",
+  //   stockQuantity: "Stock Quantity",
+  //   enterProductName: "Enter product name",
+  //   enterProductDescription: "Enter product description",
+  //   units: "units",
+
+  //   // Category Management
+  //   categories: "Categories",
+  //   categoryManagement: "Category Management",
+  //   categoryName: "Category Name",
+  //   categoryIcon: "Category Icon",
+  //   categoryColor: "Category Color",
+  //   newCategory: "New Category",
+  //   totalCategories: "Total Categories",
+  //   activeCategories: "Active Categories",
+  //   avgProductsPerCategory: "Avg Products/Category",
+  //   sortOrder: "Sort Order",
+  //   lastUpdated: "Last Updated",
+  //   actions: "Actions",
+  //   active: "Active",
+  //   inactive: "Inactive",
+  //   status: "Status",
+  //   preview: "Preview",
+  //   changes: "Changes",
+  //   categoryUpdated: "Category updated successfully",
+  //   categoryAdded: "Category added successfully",
+  //   categoryDeleted: "Category deleted successfully",
+  //   categoryActivated: "Category activated successfully",
+  //   categoryDeactivated: "Category deactivated successfully",
+  //   cannotDeleteCategoryWithProducts: "Cannot delete category that contains products",
+  //   noCategoriesFound: "No categories found",
+  // },
   en: {
-    // Navigation
-    home: "Home",
-    products: "Products",
-    cart: "Cart",
-    checkout: "Checkout",
-    admin: "Admin",
-    signIn: "Sign In",
-    signUp: "Sign Up",
-    signOut: "Sign Out",
-
-    // Common
-    search: "Search",
-    filter: "Filter",
-    sort: "Sort",
-    add: "Add",
-    edit: "Edit",
-    delete: "Delete",
-    save: "Save",
-    cancel: "Cancel",
-    loading: "Loading",
-    error: "Error",
-    success: "Success",
-
-    // Product
-    addToCart: "Add to Cart",
-    outOfStock: "Out of Stock",
-    inStock: "In Stock",
-    price: "Price",
-    category: "Category",
-    description: "Description",
-    features: "Features",
-    specifications: "Specifications",
-    reviews: "Reviews",
-    relatedProducts: "Related Products",
-    quantity: "Quantity",
-
-    // Cart
-    shoppingCart: "Shopping Cart",
-    cartEmpty: "Your cart is empty",
-    proceedToCheckout: "Proceed to Checkout",
-    continueShopping: "Continue Shopping",
-    total: "Total",
-    subtotal: "Subtotal",
-
-    // Checkout
-    deliveryInformation: "Delivery Information",
-    fullName: "Full Name",
-    phoneNumber: "Phone Number",
-    deliveryAddress: "Delivery Address",
-    orderNotes: "Order Notes",
-    submitOrder: "Submit Order",
-    orderSubmitted: "Order Submitted!",
-    paymentInformation: "Payment Information",
-
-    // Admin
-    adminDashboard: "Admin Dashboard",
-    orderManagement: "Order Management",
-    productManagement: "Product Management",
-    totalOrders: "Total Orders",
-    totalProducts: "Total Products",
-    totalCustomers: "Total Customers",
-    revenue: "Revenue",
-
-    // Order Status
-    newOrders: "New Orders",
-    negotiating: "Negotiating",
-    shipping: "Shipping",
-    completed: "Completed",
-
-    // Categories
-    all: "All",
-    led: "LED",
-    oil: "Oil",
-    solar: "Solar",
-    decorative: "Decorative",
-    emergency: "Emergency",
-
-    // Sort Options
-    newest: "Newest",
-    priceLowToHigh: "Price: Low to High",
-    priceHighToLow: "Price: High to Low",
-    nameAZ: "Name A-Z",
-
-    // Messages
-    addedToCart: "Added to cart",
-    orderCreated: "Order created successfully",
-    productNotFound: "Product not found",
-    cartIsEmpty: "Your cart is empty",
-
-    // Additional translations
-    viewAll: "View All",
-    writeReview: "Write a Review",
-    writeFirstReview: "Write the First Review",
-    noReviewsYet: "No reviews yet. Be the first to review this product!",
-    available: "available",
-    unavailable: "unavailable",
-    checkBackSoon: "This item is currently unavailable. Check back soon!",
-    whatHappensNext: "What happens next?",
-    contactUsOnZalo: "Contact us on Zalo:",
-    openZaloChat: "Open Zalo Chat",
-    printOrderDetails: "Print Order Details",
-    backToCart: "Back to Cart",
-    orderSummary: "Order Summary",
-    delivery: "Delivery",
-    free: "Free",
-    noPaymentRequired:
-      "No payment is required now. We'll contact you on Zalo to discuss payment options and confirm your order details.",
-    discussPaymentOptions: "discuss payment and delivery options",
-    specialInstructions: "Any special instructions or notes",
-    enterYour: "Enter your",
-    enterComplete: "Enter your complete",
-    anySpecialInstructions: "Any special instructions or notes",
-    submittingOrder: "Submitting Order",
-    addSomeProducts: "Add some products to your cart before checking out.",
-    beforeCheckingOut: "before checking out",
-    receivedSuccessfully: "has been received successfully",
-    confirmYourOrder: "We'll contact you on Zalo to confirm your order",
-    arrangeDelivery: "Arrange delivery",
-    toYourAddress: "to your address",
-    save: "Save",
-
-    // Admin specific translations
-    welcomeBack: "Welcome back",
-    fromLastMonth: "from last month",
-    customerInformation: "Customer Information",
-    orderInformation: "Order Information",
-    orderItems: "Order Items",
-    updateStatus: "Update Status",
-    viewDetails: "View Details",
-    editOrder: "Edit Order",
-    noOrdersInStatus: "No orders in this status",
-    selectStatus: "Select status",
-    saveChanges: "Save Changes",
-    productUpdated: "Product updated successfully",
-    productAdded: "Product added successfully",
-    productDeleted: "Product deleted successfully",
-    fillRequiredFields: "Please fill in all required fields",
-    addAtLeastOneImage: "Please add at least one product image",
-    noProductsFound: "No products found",
-    productImages: "Product Images",
-    uploadImages: "Upload Images",
-    noImagesUploaded: "No images uploaded",
-    uploadImagesToPreview: "Upload images to see preview",
-    setMain: "Set Main",
-    firstImageMain: "The first image will be used as the main product image",
-    dragDropReorder: "Drag and drop to reorder images",
-    clickSetMain: 'Click "Set Main" to make an image the primary one',
-    totalImages: "Total images",
-    selectCategory: "Select category",
-    stockQuantity: "Stock Quantity",
-    enterProductName: "Enter product name",
-    enterProductDescription: "Enter product description",
-    units: "units",
-
-    // Category Management
-    categories: "Categories",
-    categoryManagement: "Category Management",
-    categoryName: "Category Name",
-    categoryIcon: "Category Icon",
-    categoryColor: "Category Color",
-    newCategory: "New Category",
-    totalCategories: "Total Categories",
-    activeCategories: "Active Categories",
-    avgProductsPerCategory: "Avg Products/Category",
-    sortOrder: "Sort Order",
-    lastUpdated: "Last Updated",
-    actions: "Actions",
-    active: "Active",
-    inactive: "Inactive",
-    status: "Status",
-    preview: "Preview",
-    changes: "Changes",
-    categoryUpdated: "Category updated successfully",
-    categoryAdded: "Category added successfully",
-    categoryDeleted: "Category deleted successfully",
-    categoryActivated: "Category activated successfully",
-    categoryDeactivated: "Category deactivated successfully",
-    cannotDeleteCategoryWithProducts: "Cannot delete category that contains products",
-    noCategoriesFound: "No categories found",
-  },
-  vi: {
     // Navigation
     home: "Trang chủ",
     products: "Sản phẩm",
@@ -399,6 +399,7 @@ export const translations: Record<Language, Translations> = {
     reviews: "Đánh giá",
     relatedProducts: "Sản phẩm liên quan",
     quantity: "Số lượng",
+    priceRange: "Khoảng giá",
 
     // Cart
     shoppingCart: "Giỏ hàng",
@@ -483,7 +484,6 @@ export const translations: Record<Language, Translations> = {
     confirmYourOrder: "Chúng tôi sẽ liên hệ với bạn qua Zalo để xác nhận đơn hàng",
     arrangeDelivery: "Sắp xếp giao hàng",
     toYourAddress: "đến địa chỉ của bạn",
-    save: "Tiết kiệm",
 
     // Admin specific translations
     welcomeBack: "Chào mừng trở lại",

@@ -163,11 +163,11 @@ export default function ProductPage({ params }: ProductPageProps) {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Products</BreadcrumbLink>
+                <BreadcrumbLink href="/">Sản phẩm</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -257,7 +257,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 <span>{product.category}</span>
                 <Separator orientation="vertical" className="h-4" />
                 <Badge variant={product.inStock ? "default" : "secondary"}>
-                  {product.inStock ? "In Stock" : "Out of Stock"}
+                  {product.inStock ? "Còn hàng" : "Hết hàng"}
                 </Badge>
               </div>
               <h1 className="text-2xl lg:text-3xl font-bold mb-4">{product.name}</h1>
@@ -304,7 +304,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             {/* Quantity & Actions */}
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="font-medium">Quantity:</span>
+                <span className="font-medium">Số lượng:</span>
                 <div className="flex items-center border rounded-lg">
                   <Button
                     variant="ghost"
@@ -336,17 +336,9 @@ export default function ProductPage({ params }: ProductPageProps) {
                   size="lg"
                 >
                   <ShoppingCart className="h-4 w-4 mr-2" />
-                  {product.inStock ? "Add to Cart" : "Out of Stock"}
+                  {product.inStock ? "Thêm vào giỏ hàng" : "Hết hàng"}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={handleToggleWishlist}
-                  className={`${isWishlisted ? "text-red-500 border-red-500" : ""}`}
-                >
-                  <Heart className={`h-4 w-4 mr-2 ${isWishlisted ? "fill-red-500" : ""}`} />
-                  {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-                </Button>
+               
               </div>
             </div>
 
@@ -376,7 +368,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           <section>
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl">Reviews</CardTitle>
+                <CardTitle className="text-xl">Đánh giá của khách hàng</CardTitle>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center">{renderStars(product.rating)}</div>
@@ -384,16 +376,16 @@ export default function ProductPage({ params }: ProductPageProps) {
                   </div>
                   <Separator orientation="vertical" className="h-4" />
                   <span>
-                    {product.reviewCount} total reviews
+                    {product.reviewCount} đánh giá
                   </span>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
                   <p className="text-muted-foreground mb-4">
-                    No reviews yet. Be the first to review this product!
+                    Chưa có đánh giá. Hãy là người đầu tiên đánh giá sản phẩm này!
                   </p>
-                  <Button variant="outline">Write the First Review</Button>
+                  <Button variant="outline">Viết đánh giá đầu tiên</Button>
                 </div>
               </CardContent>
             </Card>
@@ -403,9 +395,9 @@ export default function ProductPage({ params }: ProductPageProps) {
         {/* Related Products */}
         <div className="mt-12 lg:mt-16">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Related Products</h2>
+            <h2 className="text-2xl font-bold">Sản phẩm liên quan</h2>
             <Link href="/">
-              <Button variant="outline">View All</Button>
+              <Button variant="outline">Xem tất cả</Button>
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">

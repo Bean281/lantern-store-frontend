@@ -226,12 +226,12 @@ export function OrderManagement() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Order ID</TableHead>
+                      <TableHead>Mã đơn hàng</TableHead>
                       <TableHead>{t("totalCustomers").replace("Total ", "")}</TableHead>
-                      <TableHead>Items</TableHead>
+                      {/* <TableHead>Items</TableHead> */}
                       <TableHead>{t("total")}</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>Ngày</TableHead>
+                      <TableHead>Tương tác</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -244,11 +244,11 @@ export function OrderManagement() {
                             <div className="text-sm text-muted-foreground">{order.phone}</div>
                           </div>
                         </TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           <div className="text-sm">
                             {order.items.length} item{order.items.length > 1 ? "s" : ""}
                           </div>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell className="font-medium">{formatVND(order.total)}</TableCell>
                         <TableCell className="text-sm">{formatDate(order.createdAt)}</TableCell>
                         <TableCell>
@@ -261,11 +261,11 @@ export function OrderManagement() {
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => handleViewOrder(order)}>
                                 <Eye className="h-4 w-4 mr-2" />
-                                View Details
+                                Xem chi tiết
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleEditOrder(order)}>
                                 <Edit className="h-4 w-4 mr-2" />
-                                {t("edit")} Order
+                                {t("edit")} đơn hàng
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

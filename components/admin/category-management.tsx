@@ -292,7 +292,7 @@ export function CategoryManagement() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US", {
+    return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -302,11 +302,11 @@ export function CategoryManagement() {
   }
 
   const getCategoryName = (category: ExtendedCategory) => {
-    return language === "vi" ? category.nameVi : category.name
+    return category.name
   }
 
   const getCategoryDescription = (category: ExtendedCategory) => {
-    return language === "vi" ? category.descriptionVi : category.description
+    return category.description
   }
 
   const predefinedColors = [
@@ -349,7 +349,7 @@ export function CategoryManagement() {
       </div>
 
       {/* Categories Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -376,7 +376,7 @@ export function CategoryManagement() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        {/* <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-orange-100 rounded-lg">
@@ -403,7 +403,7 @@ export function CategoryManagement() {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       {/* Categories Table */}
@@ -441,10 +441,10 @@ export function CategoryManagement() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("category")}</TableHead>
-                  <TableHead>{t("description")}</TableHead>
-                  <TableHead>{t("products")}</TableHead>
-                  <TableHead>{t("status")}</TableHead>
-                  <TableHead>{t("sortOrder")}</TableHead>
+                  {/* <TableHead>{t("description")}</TableHead> */}
+                  {/* <TableHead>{t("products")}</TableHead> */}
+                  {/* <TableHead>{t("status")}</TableHead> */}
+                  {/* <TableHead>{t("sortOrder")}</TableHead> */}
                   <TableHead>{t("lastUpdated")}</TableHead>
                   <TableHead>{t("actions")}</TableHead>
                 </TableRow>
@@ -472,23 +472,23 @@ export function CategoryManagement() {
                             <div>
                               <div className="font-medium">{getCategoryName(category)}</div>
                               <div className="text-sm text-muted-foreground">
-                                {language === "vi" ? category.name : category.nameVi}
+                                {category.name}
                               </div>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           <div className="max-w-xs">
                             <p className="text-sm line-clamp-2">{getCategoryDescription(category)}</p>
                           </div>
-                        </TableCell>
-                        <TableCell>
+                        </TableCell> */}
+                        {/* <TableCell>
                           <div className="flex items-center gap-2">
                             <Package className="h-4 w-4 text-muted-foreground" />
                             <span className="font-medium">{category.productCount}</span>
                           </div>
-                        </TableCell>
-                        <TableCell>
+                        </TableCell> */}
+                        {/* <TableCell>
                           <div className="flex items-center gap-2">
                             <Switch
                               checked={category.isActive}
@@ -498,10 +498,10 @@ export function CategoryManagement() {
                               {category.isActive ? t("active") : t("inactive")}
                             </Badge>
                           </div>
-                        </TableCell>
-                        <TableCell>
+                        </TableCell> */}
+                        {/* <TableCell>
                           <Badge variant="outline">{category.sortOrder}</Badge>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell className="text-sm text-muted-foreground">{formatDate(category.updatedAt || category.createdAt || "")}</TableCell>
                         <TableCell>
                           <DropdownMenu>
@@ -544,7 +544,7 @@ export function CategoryManagement() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">{t("categoryName")} (English) *</Label>
                 <Input
@@ -554,7 +554,7 @@ export function CategoryManagement() {
                   placeholder="Enter category name in English"
                 />
               </div>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="nameVi">{t("categoryName")} (Tiếng Việt) *</Label>
                 <Input
                   id="nameVi"
@@ -562,10 +562,10 @@ export function CategoryManagement() {
                   onChange={(e) => setCategoryForm((prev) => ({ ...prev, nameVi: e.target.value }))}
                   placeholder="Nhập tên danh mục bằng tiếng Việt"
                 />
-              </div>
+              </div> */}
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="description">{t("description")} (English)</Label>
               <Textarea
                 id="description"
@@ -574,9 +574,9 @@ export function CategoryManagement() {
                 placeholder="Enter category description in English"
                 rows={2}
               />
-            </div>
+            </div> */}
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="descriptionVi">{t("description")} (Tiếng Việt)</Label>
               <Textarea
                 id="descriptionVi"
@@ -585,10 +585,10 @@ export function CategoryManagement() {
                 placeholder="Nhập mô tả danh mục bằng tiếng Việt"
                 rows={2}
               />
-            </div>
+            </div> */}
 
             {/* Visual Settings */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>{t("categoryIcon")}</Label>
                 <div className="grid grid-cols-5 gap-2">
@@ -635,10 +635,10 @@ export function CategoryManagement() {
                   className="mt-2 h-10"
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Settings */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="sortOrder">{t("sortOrder")}</Label>
                 <Input
@@ -660,7 +660,7 @@ export function CategoryManagement() {
                 />
                 <Label htmlFor="isActive">{t("active")}</Label>
               </div>
-            </div>
+            </div> */}
 
             {/* Preview */}
             <div className="space-y-2">
@@ -675,12 +675,10 @@ export function CategoryManagement() {
                   </div>
                   <div>
                     <div className="font-medium">
-                      {language === "vi" ? categoryForm.nameVi || categoryForm.name : categoryForm.name}
+                      {categoryForm.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {language === "vi"
-                        ? categoryForm.descriptionVi || categoryForm.description
-                        : categoryForm.description}
+                      {categoryForm.description}
                     </div>
                   </div>
                   <Badge variant={categoryForm.isActive ? "default" : "secondary"} className="ml-auto">

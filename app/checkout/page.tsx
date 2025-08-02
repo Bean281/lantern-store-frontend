@@ -192,7 +192,7 @@ export default function CheckoutPage() {
                         name="fullName"
                         value={formData.fullName}
                         onChange={handleInputChange}
-                        placeholder={`Enter your ${t("fullName").toLowerCase()}`}
+                        placeholder={`Nhập ${t("fullName").toLowerCase()}`}
                         required
                       />
                     </div>
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
                         type="tel"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        placeholder={`Enter your ${t("phoneNumber").toLowerCase()}`}
+                        placeholder={`Nhập ${t("phoneNumber").toLowerCase()}`}
                         required
                       />
                     </div>
@@ -217,20 +217,20 @@ export default function CheckoutPage() {
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
-                        placeholder={`Enter your complete ${t("deliveryAddress").toLowerCase()}`}
+                        placeholder={`Nhập ${t("deliveryAddress").toLowerCase()}`}
                         rows={3}
                         required
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="notes">{t("orderNotes")} (Optional)</Label>
+                      <Label htmlFor="notes">{t("orderNotes")} (tùy chọn)</Label>
                       <Textarea
                         id="notes"
                         name="notes"
                         value={formData.notes}
                         onChange={handleInputChange}
-                        placeholder="Any special instructions or notes"
+                        placeholder="Yêu cầu hoặc ghi chú đặc biệt"
                         rows={2}
                       />
                     </div>
@@ -245,8 +245,9 @@ export default function CheckoutPage() {
               <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                 <h3 className="font-semibold mb-2">{t("paymentInformation")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  No payment is required now. We'll contact you on Zalo to discuss payment options and confirm your
-                  order details.
+                Không cần thanh toán ngay bây giờ. Chúng tôi sẽ liên hệ với bạn trên Zalo để thảo luận về các lựa chọn thanh toán và xác nhận
+                chi tiết đặt hàng.
+
                 </p>
               </div>
             </div>
@@ -255,7 +256,7 @@ export default function CheckoutPage() {
             <div>
               <Card>
                 <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
+                  <CardTitle>Tổng Đơn Hàng</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {items.map((item) => (
@@ -284,10 +285,10 @@ export default function CheckoutPage() {
                       <span>{t("subtotal")}:</span>
                       <span>{formatVND(getTotalPrice())}</span>
                     </div>
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                       <span>Delivery:</span>
                       <span className="text-green-600">Free</span>
-                    </div>
+                    </div> */}
                     <Separator />
                     <div className="flex justify-between text-lg font-semibold">
                       <span>{t("total")}:</span>

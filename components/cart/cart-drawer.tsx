@@ -51,7 +51,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                       />
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium truncate">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground">{formatVND(item.price)} each</p>
+                        <p className="text-sm text-muted-foreground">{formatVND(item.price)} / sản phẩm</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Button

@@ -51,7 +51,7 @@ export function ProductFilters({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t("price")} Range</CardTitle>
+          <CardTitle className="text-lg">{t("priceRange")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Slider value={priceRange} onValueChange={onPriceRangeChange} max={10000000} min={0} step={100000} className="w-full" />

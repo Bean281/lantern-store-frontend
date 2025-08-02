@@ -146,7 +146,7 @@ export default function HomePage() {
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
-                placeholder={`${t("search")} lanterns...`}
+                placeholder={`${t("search")} Lồng Đèn...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -159,7 +159,7 @@ export default function HomePage() {
             <OrderSearch />
             
             {/* Language Switcher */}
-            <LanguageSwitcher currentLanguage={language} onLanguageChange={setLanguage} />
+            {/* <LanguageSwitcher currentLanguage={language} onLanguageChange={setLanguage} /> */}
 
             {/* Cart Button */}
             <Button variant="ghost" size="icon" className="relative" onClick={() => setShowCart(true)}>

@@ -1,5 +1,5 @@
 "use client"
-import { Package, ShoppingCart, Users, TrendingUp } from "lucide-react"
+import { Package, ShoppingCart, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -39,13 +39,6 @@ export function AdminDashboard() {
       loading: isLoadingProductStats,
     },
     {
-      title: t("totalCustomers"),
-      value: "89", // This would come from a customer stats API if available
-      change: "+8%",
-      icon: Users,
-      loading: false,
-    },
-    {
       title: t("revenue"),
       value: orderStats?.totalRevenue ? formatVND(orderStats.totalRevenue) : formatVND(0),
       change: "+15%", // This could be calculated from historical data
@@ -68,7 +61,7 @@ export function AdminDashboard() {
             </div>
             <div className="flex items-center gap-2">
               {/* Language Switcher */}
-              <LanguageSwitcher currentLanguage={language} onLanguageChange={setLanguage} />
+              {/* <LanguageSwitcher currentLanguage={language} onLanguageChange={setLanguage} /> */}
               <Button variant="outline" onClick={logout}>
                 {t("signOut")}
               </Button>
@@ -79,7 +72,7 @@ export function AdminDashboard() {
 
       <div className="container px-4 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {stats.map((stat) => (
             <Card key={stat.title}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

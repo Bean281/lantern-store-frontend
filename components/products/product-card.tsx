@@ -1,37 +1,42 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { ShoppingCart, Plus, Minus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { useCart } from "@/components/cart/cart-context"
-import { useLanguage } from "@/components/language/language-context"
-import { useToast } from "@/hooks/use-toast"
-import { formatVND } from "@/lib/utils"
-import { Product } from "@/lib/api/products/type"
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ShoppingCart, Plus, Minus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useCart } from "@/components/cart/cart-context";
+import { useLanguage } from "@/components/language/language-context";
+import { useToast } from "@/hooks/use-toast";
+import { formatVND } from "@/lib/utils";
+import { Product } from "@/lib/api/products/type";
 
 interface ProductCardProps {
-  product: Product
+  product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const [showQuantityModal, setShowQuantityModal] = useState(false)
-  const [quantity, setQuantity] = useState(1)
-  const { addItem } = useCart()
-  const { t } = useLanguage()
-  const { toast } = useToast()
+  const [showQuantityModal, setShowQuantityModal] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
+  const { t } = useLanguage();
+  const { toast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (!product.inStock) return
-    setShowQuantityModal(true)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    if (!product.inStock) return;
+    setShowQuantityModal(true);
+  };
 
   const handleConfirmAdd = () => {
     addItem({
@@ -40,14 +45,16 @@ export function ProductCard({ product }: ProductCardProps) {
       price: product.price,
       image: product.images?.[0] || "/placeholder.svg",
       quantity: quantity,
-    })
-    setShowQuantityModal(false)
-    setQuantity(1)
+    });
+    setShowQuantityModal(false);
+    setQuantity(1);
     toast({
       title: t("addedToCart"),
-      description: `${quantity}x ${product.name} ${t("addedToCart").toLowerCase()}`,
-    })
-  }
+      description: `${quantity}x ${product.name} ${t(
+        "addedToCart"
+      ).toLowerCase()}`,
+    });
+  };
 
   return (
     <>
@@ -63,7 +70,7 @@ export function ProductCard({ product }: ProductCardProps) {
             />
             {product.originalPrice && (
               <Badge className="absolute top-2 left-2 bg-red-500">
-                                    Save {formatVND(product.originalPrice - product.price)}
+                Save {formatVND(product.originalPrice - product.price)}
               </Badge>
             )}
           </div>
@@ -76,7 +83,10 @@ export function ProductCard({ product }: ProductCardProps) {
                 {product.name}
               </h3>
             </Link>
-            <Badge variant="secondary" className="text-xs sm:ml-2 flex-shrink-0 self-start">
+            <Badge
+              variant="secondary"
+              className="text-xs sm:ml-2 flex-shrink-0 self-start"
+            >
               {product.category}
             </Badge>
           </div>
@@ -87,10 +97,14 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2">
-                              <span className="text-lg sm:text-2xl font-bold text-primary">{formatVND(product.price)}</span>
-                {product.originalPrice && (
-                  <span className="text-sm text-muted-foreground line-through">{formatVND(product.originalPrice)}</span>
-                )}
+              <span className="text-lg sm:text-2xl font-bold text-primary">
+                {formatVND(product.price)}
+              </span>
+              {product.originalPrice && (
+                <span className="text-sm text-muted-foreground line-through">
+                  {formatVND(product.originalPrice)}
+                </span>
+              )}
             </div>
 
             <Button
@@ -100,8 +114,12 @@ export function ProductCard({ product }: ProductCardProps) {
               className="gap-1 text-xs sm:text-sm"
             >
               <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">{product.inStock ? t("addToCart") : t("outOfStock")}</span>
-              <span className="sm:hidden">{product.inStock ? t("add") : t("outOfStock")}</span>
+              <span className="hidden sm:inline">
+                {product.inStock ? t("addToCart") : t("outOfStock")}
+              </span>
+              <span className="sm:hidden">
+                {product.inStock ? t("add") : t("outOfStock")}
+              </span>
             </Button>
           </div>
         </div>
@@ -130,27 +148,43 @@ export function ProductCard({ product }: ProductCardProps) {
               />
               <div>
                 <h4 className="font-semibold">{product.name}</h4>
-                <p className="text-muted-foreground">{formatVND(product.price)}</p>
+                <p className="text-muted-foreground">
+                  {formatVND(product.price)}
+                </p>
               </div>
             </div>
 
             <div className="flex items-center justify-center gap-4">
-              <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              >
                 <Minus className="h-4 w-4" />
               </Button>
-              <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
-              <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
+              <span className="text-xl font-semibold w-12 text-center">
+                {quantity}
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setQuantity(quantity + 1)}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
 
             <div className="flex items-center justify-between text-lg font-semibold">
               <span>{t("total")}:</span>
-                              <span>{formatVND(product.price * quantity)}</span>
+              <span>{formatVND(product.price * quantity)}</span>
             </div>
 
             <div className="flex gap-2">
-              <Button variant="outline" className="flex-1 bg-transparent" onClick={() => setShowQuantityModal(false)}>
+              <Button
+                variant="outline"
+                className="flex-1 bg-transparent"
+                onClick={() => setShowQuantityModal(false)}
+              >
                 {t("cancel")}
               </Button>
               <Button className="flex-1" onClick={handleConfirmAdd}>
@@ -161,5 +195,5 @@ export function ProductCard({ product }: ProductCardProps) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

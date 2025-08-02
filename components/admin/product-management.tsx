@@ -607,7 +607,7 @@ export function ProductManagement() {
                             />
                             <div>
                               <div className="font-medium">{product.name}</div>
-                              <div className="text-sm text-muted-foreground line-clamp-1">{product.description}</div>
+                              <div className="text-sm text-muted-foreground w-96">{product.description}</div>
                             </div>
                           </div>
                         </TableCell>
@@ -617,7 +617,7 @@ export function ProductManagement() {
                         <TableCell className="font-medium">{formatVND(product.price)}</TableCell>
                         <TableCell>
                           <span className={product.stockCount > 0 ? "text-green-600" : "text-red-600"}>
-                            {product.stockCount} units
+                            {product.stockCount} sản phẩm
                           </span>
                         </TableCell>
                         <TableCell>
