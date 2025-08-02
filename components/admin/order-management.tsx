@@ -290,40 +290,41 @@ export function OrderManagement() {
 
       {/* Order Details Modal */}
       <Dialog open={showOrderDetails} onOpenChange={setShowOrderDetails}>
-        <DialogContent className="max-w-[95vw] sm:max-w-2xl bg-background border-border">
-          <DialogHeader className="pb-4 border-b border-border/50">
-            <DialogTitle className="text-foreground">Order Details - {selectedOrder?.id}</DialogTitle>
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[95vh] bg-background border-border flex flex-col overflow-hidden">
+          <DialogHeader className="pb-3 border-b border-border/50 flex-shrink-0">
+            <DialogTitle className="text-sm sm:text-lg text-foreground">Order Details - {selectedOrder?.id}</DialogTitle>
           </DialogHeader>
           {selectedOrder && (
-            <div className="space-y-6 pt-4">
+            <div className="flex-1 overflow-y-auto px-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div className="space-y-4 sm:space-y-6 py-3 sm:py-4">
               {/* Customer Information */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
-                  <h4 className="font-semibold mb-2">Customer Information</h4>
-                  <div className="space-y-1 text-sm">
-                    <p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="p-3 sm:p-4 bg-muted/30 rounded-lg border border-border/50">
+                  <h4 className="font-semibold mb-2 text-sm sm:text-base">Customer Information</h4>
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <p className="break-words">
                       <strong>Name:</strong> {selectedOrder.customerName}
                     </p>
-                    <p>
+                    <p className="break-words">
                       <strong>Phone:</strong> {selectedOrder.phone}
                     </p>
-                    <p>
+                    <p className="break-words">
                       <strong>Address:</strong> {selectedOrder.address}
                     </p>
                   </div>
                 </div>
-                <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
-                  <h4 className="font-semibold mb-2">Order Information</h4>
-                  <div className="space-y-1 text-sm">
-                    <p>
+                <div className="p-3 sm:p-4 bg-muted/30 rounded-lg border border-border/50">
+                  <h4 className="font-semibold mb-2 text-sm sm:text-base">Order Information</h4>
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <p className="break-words">
                       <strong>Order ID:</strong> {selectedOrder.id}
                     </p>
-                    <p>
+                    <p className="break-words">
                       <strong>Date:</strong> {formatDate(selectedOrder.createdAt)}
                     </p>
-                    <div>
+                    <div className="flex flex-wrap items-center gap-2">
                       <strong>Status:</strong>
-                      <Badge className="ml-2" variant="secondary">
+                      <Badge variant="secondary">
                         {statusConfig[selectedOrder.status as keyof typeof statusConfig].label}
                       </Badge>
                     </div>
@@ -332,30 +333,32 @@ export function OrderManagement() {
               </div>
 
               {/* Order Items */}
-              <div className="p-4 bg-card/50 rounded-lg border border-border/50">
-                <h4 className="font-semibold mb-4">Order Items</h4>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead>{t("quantity")}</TableHead>
-                      <TableHead>{t("price")}</TableHead>
-                      <TableHead>{t("subtotal")}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {selectedOrder.items.map((item: any, index: number) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell>{formatVND(item.price)}</TableCell>
-                        <TableCell>{formatVND(item.price * item.quantity)}</TableCell>
+              <div className="p-3 sm:p-4 bg-card/50 rounded-lg border border-border/50">
+                <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Order Items</h4>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs sm:text-sm">Product</TableHead>
+                        <TableHead className="text-xs sm:text-sm">{t("quantity")}</TableHead>
+                        <TableHead className="text-xs sm:text-sm">{t("price")}</TableHead>
+                        <TableHead className="text-xs sm:text-sm">{t("subtotal")}</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <div className="flex justify-end mt-4">
-                  <div className="text-lg font-semibold">
+                    </TableHeader>
+                    <TableBody>
+                      {selectedOrder.items.map((item: any, index: number) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-xs sm:text-sm break-words max-w-[120px] sm:max-w-none">{item.name}</TableCell>
+                          <TableCell className="text-xs sm:text-sm">{item.quantity}</TableCell>
+                          <TableCell className="text-xs sm:text-sm whitespace-nowrap">{formatVND(item.price)}</TableCell>
+                          <TableCell className="text-xs sm:text-sm whitespace-nowrap">{formatVND(item.price * item.quantity)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                <div className="flex justify-end mt-3 sm:mt-4">
+                  <div className="text-sm sm:text-lg font-semibold">
                     {t("total")}: {formatVND(selectedOrder.total)}
                   </div>
                 </div>
@@ -363,29 +366,30 @@ export function OrderManagement() {
 
               {/* Notes */}
               {selectedOrder.notes && (
-                <div className="p-4 bg-muted/20 rounded-lg border border-border/50">
-                  <h4 className="font-semibold mb-2">Notes</h4>
-                  <p className="text-sm text-muted-foreground">{selectedOrder.notes}</p>
+                <div className="p-3 sm:p-4 bg-muted/20 rounded-lg border border-border/50">
+                  <h4 className="font-semibold mb-2 text-sm sm:text-base">Notes</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground break-words">{selectedOrder.notes}</p>
                 </div>
               )}
 
               {/* Status Update */}
-              <div className="p-4 bg-accent/20 rounded-lg border border-border/50">
-                <h4 className="font-semibold mb-3">Update Status</h4>
+              <div className="p-3 sm:p-4 bg-accent/20 rounded-lg border border-border/50 mb-4">
+                <h4 className="font-semibold mb-3 text-sm sm:text-base">Update Status</h4>
                 <Select
                   defaultValue={selectedOrder.status}
                   onValueChange={(value) => handleStatusChange(selectedOrder.id, value)}
                 >
-                  <SelectTrigger className="w-full sm:w-48">
+                  <SelectTrigger className="w-full sm:w-48 h-9 sm:h-10 text-xs sm:text-sm">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NEW">{t("newOrders")}</SelectItem>
-                    <SelectItem value="NEGOTIATING">{t("negotiating")}</SelectItem>
-                    <SelectItem value="SHIPPING">{t("shipping")}</SelectItem>
-                    <SelectItem value="COMPLETED">{t("completed")}</SelectItem>
+                  <SelectContent className="text-xs sm:text-sm">
+                    <SelectItem value="NEW" className="text-xs sm:text-sm">{t("newOrders")}</SelectItem>
+                    <SelectItem value="NEGOTIATING" className="text-xs sm:text-sm">{t("negotiating")}</SelectItem>
+                    <SelectItem value="SHIPPING" className="text-xs sm:text-sm">{t("shipping")}</SelectItem>
+                    <SelectItem value="COMPLETED" className="text-xs sm:text-sm">{t("completed")}</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
               </div>
             </div>
           )}
@@ -394,86 +398,96 @@ export function OrderManagement() {
 
       {/* Edit Order Modal */}
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="max-w-[95vw] sm:max-w-2xl bg-background border-border">
-          <DialogHeader className="pb-4 border-b border-border/50">
-            <DialogTitle className="text-foreground">
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[95vh] bg-background border-border flex flex-col overflow-hidden">
+          <DialogHeader className="pb-3 border-b border-border/50 flex-shrink-0">
+            <DialogTitle className="text-sm sm:text-lg text-foreground">
               {t("edit")} Order - {editingOrder?.id}
             </DialogTitle>
           </DialogHeader>
           {editingOrder && (
-            <div className="space-y-6 pt-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="flex-1 overflow-y-auto px-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-customerName" className="text-xs sm:text-sm font-medium">Customer Name *</Label>
+                    <Input
+                      id="edit-customerName"
+                      value={editForm.customerName}
+                      onChange={(e) => setEditForm((prev) => ({ ...prev, customerName: e.target.value }))}
+                      placeholder="Enter customer name"
+                      className="h-9 sm:h-10 text-xs sm:text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-phone" className="text-xs sm:text-sm font-medium">{t("phoneNumber")} *</Label>
+                    <Input
+                      id="edit-phone"
+                      value={editForm.phone}
+                      onChange={(e) => setEditForm((prev) => ({ ...prev, phone: e.target.value }))}
+                      placeholder={`Enter ${t("phoneNumber").toLowerCase()}`}
+                      className="h-9 sm:h-10 text-xs sm:text-sm"
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="edit-customerName">Customer Name *</Label>
-                  <Input
-                    id="edit-customerName"
-                    value={editForm.customerName}
-                    onChange={(e) => setEditForm((prev) => ({ ...prev, customerName: e.target.value }))}
-                    placeholder="Enter customer name"
+                  <Label htmlFor="edit-address" className="text-xs sm:text-sm font-medium">{t("deliveryAddress")} *</Label>
+                  <Textarea
+                    id="edit-address"
+                    value={editForm.address}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, address: e.target.value }))}
+                    placeholder={`Enter ${t("deliveryAddress").toLowerCase()}`}
+                    rows={2}
+                    className="text-xs sm:text-sm resize-none min-h-[60px]"
                   />
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="edit-phone">{t("phoneNumber")} *</Label>
-                  <Input
-                    id="edit-phone"
-                    value={editForm.phone}
-                    onChange={(e) => setEditForm((prev) => ({ ...prev, phone: e.target.value }))}
-                    placeholder={`Enter ${t("phoneNumber").toLowerCase()}`}
+                  <Label htmlFor="edit-notes" className="text-xs sm:text-sm font-medium">Notes</Label>
+                  <Textarea
+                    id="edit-notes"
+                    value={editForm.notes}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, notes: e.target.value }))}
+                    placeholder="Order notes"
+                    rows={2}
+                    className="text-xs sm:text-sm resize-none min-h-[50px]"
                   />
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-address">{t("deliveryAddress")} *</Label>
-                <Textarea
-                  id="edit-address"
-                  value={editForm.address}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, address: e.target.value }))}
-                  placeholder={`Enter ${t("deliveryAddress").toLowerCase()}`}
-                  rows={3}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-status" className="text-xs sm:text-sm font-medium">Order Status</Label>
+                  <Select
+                    value={editForm.status}
+                    onValueChange={(value) => setEditForm((prev) => ({ ...prev, status: value }))}
+                  >
+                    <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent className="text-xs sm:text-sm">
+                      <SelectItem value="NEW" className="text-xs sm:text-sm">{t("newOrders")}</SelectItem>
+                      <SelectItem value="NEGOTIATING" className="text-xs sm:text-sm">{t("negotiating")}</SelectItem>
+                      <SelectItem value="SHIPPING" className="text-xs sm:text-sm">{t("shipping")}</SelectItem>
+                      <SelectItem value="COMPLETED" className="text-xs sm:text-sm">{t("completed")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-notes">Notes</Label>
-                <Textarea
-                  id="edit-notes"
-                  value={editForm.notes}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, notes: e.target.value }))}
-                  placeholder="Order notes"
-                  rows={2}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-status">Order Status</Label>
-                <Select
-                  value={editForm.status}
-                  onValueChange={(value) => setEditForm((prev) => ({ ...prev, status: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NEW">{t("newOrders")}</SelectItem>
-                    <SelectItem value="NEGOTIATING">{t("negotiating")}</SelectItem>
-                    <SelectItem value="SHIPPING">{t("shipping")}</SelectItem>
-                    <SelectItem value="COMPLETED">{t("completed")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button variant="outline" className="flex-1 bg-transparent" onClick={() => setShowEditModal(false)}>
-                  {t("cancel")}
-                </Button>
-                <Button
-                  className="flex-1"
-                  onClick={handleSaveEdit}
-                  disabled={!editForm.customerName || !editForm.phone || !editForm.address || isUpdatingInfoAdmin || isUpdatingStatus}
-                >
-                  {(isUpdatingInfoAdmin || isUpdatingStatus) ? `${t("loading")}...` : `${t("save")} Changes`}
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 pb-4">
+                  <Button 
+                    variant="outline" 
+                    className="w-full sm:flex-1 h-9 sm:h-10 text-xs sm:text-sm bg-transparent" 
+                    onClick={() => setShowEditModal(false)}
+                  >
+                    {t("cancel")}
+                  </Button>
+                  <Button
+                    className="w-full sm:flex-1 h-9 sm:h-10 text-xs sm:text-sm"
+                    onClick={handleSaveEdit}
+                    disabled={!editForm.customerName || !editForm.phone || !editForm.address || isUpdatingInfoAdmin || isUpdatingStatus}
+                  >
+                    {(isUpdatingInfoAdmin || isUpdatingStatus) ? `${t("loading")}...` : `${t("save")} Changes`}
+                  </Button>
+                </div>
               </div>
             </div>
           )}

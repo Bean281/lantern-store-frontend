@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/use-auth"
 import { LanguageProvider } from "@/components/language/language-context"
 import { Toaster } from "@/components/ui/toaster"
 import { QueryProvider } from "@/lib/query-client"
+import { Footer } from "@/components/footer"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -28,7 +29,12 @@ export default function RootLayout({
           <LanguageProvider>
             <AuthProvider>
               <CartProvider>
-                {children}
+                <div className="min-h-screen flex flex-col">
+                  <main className="flex-1">
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
                 <Toaster />
               </CartProvider>
             </AuthProvider>
