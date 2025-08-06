@@ -100,11 +100,11 @@ export function ProductCard({ product }: ProductCardProps) {
               <span className="text-lg sm:text-2xl font-bold text-primary">
                 {formatVND(product.price)}
               </span>
-              {product.originalPrice && (
+              {/* {product.originalPrice && (
                 <span className="text-sm text-muted-foreground line-through">
                   {formatVND(product.originalPrice)}
                 </span>
-              )}
+              )} */}
             </div>
 
             <Button

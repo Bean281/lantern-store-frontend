@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/components/language/language-context"
 import { Toaster } from "@/components/ui/toaster"
 import { QueryProvider } from "@/lib/query-client"
 import { Footer } from "@/components/footer"
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -40,6 +41,7 @@ export default function RootLayout({
             </AuthProvider>
           </LanguageProvider>
         </QueryProvider>
+        <Analytics />
       </body>
     </html>
   )
